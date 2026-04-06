@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1080,6 +1078,27 @@ let orderTimerInterval = null;
 const TOTAL_SECONDS = 15 * 60;
 const CIRCUMFERENCE = 2 * Math.PI * 54;
 
+/* ── Session order tracking ── */
+function getSessionKey() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return 'emerald_session_t' + (urlParams.get('table') || '0');
+}
+function getSessionOrders() {
+  try { return JSON.parse(sessionStorage.getItem(getSessionKey()) || '[]'); } catch(e) { return []; }
+}
+function addSessionOrder(orderId) {
+  const orders = getSessionOrders();
+  orders.push(orderId);
+  sessionStorage.setItem(getSessionKey(), JSON.stringify(orders));
+}
+function getMainOrderId() {
+  const orders = getSessionOrders();
+  return orders.length > 0 ? orders[0] : null;
+}
+function getOrderRound() {
+  return getSessionOrders().length + 1;
+}
+
 function processPayment() {
   triggerHaptic();
 
@@ -1095,6 +1114,9 @@ function processPayment() {
   const selectedDiet = window._selectedDiet || "Regular";
   const orderId      = "ORD" + Date.now();
 
+  const round       = getOrderRound();
+  const mainOrderId = getMainOrderId();
+
   const order = {
     id: orderId,
     tableNumber: tableNum,
@@ -1105,16 +1127,65 @@ function processPayment() {
     status: "Preparing",
     diet: selectedDiet,
     orderType: "dinein",
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    round: round,
+    mainOrderId: mainOrderId || orderId
   };
 
   db.ref("orders/" + orderId).set(order).then(() => {
+    addSessionOrder(orderId);
+    if (mainOrderId) {
+      db.ref("orders/" + mainOrderId + "/subOrders/" + orderId).set({ round: round, orderId: orderId, createdAt: order.createdAt });
+    }
     localStorage.setItem("currentOrderId", orderId);
     showOrderConfirm();
+    setCartViewOnly();
   }).catch((error) => {
     console.error("Error placing order:", error);
     alert("Error placing order. Please try again.");
   });
+}
+
+/* ── View-only + another order ── */
+function setCartViewOnly() {
+  const payBtn = document.querySelector('.pay-btn');
+  if (!payBtn) return;
+  payBtn.insertAdjacentHTML('afterend', '<div id="order-placed-notice" style="margin-top:14px;"><div style="background:#f0fff4;border:1.5px solid #22c55e;border-radius:12px;padding:14px 16px;text-align:center;margin-bottom:10px;"><div style=\"font-size:15px;font-weight:700;color:#15803d;\">&#x2705; Order Placed!</div><div style=\"font-size:13px;color:#555;margin-top:4px;\">Your order is being prepared in the kitchen.</div></div><button onclick=\"startAnotherOrder()\" style=\"width:100%;padding:14px;background:#ffcc00;color:#111;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;\">&#x2795; Place Another Order</button></div>');
+  payBtn.remove();
+  document.querySelectorAll('.add-initial, .btn-qty').forEach(btn => {
+    btn.disabled = true;
+    btn.style.opacity = '0.4';
+    btn.style.pointerEvents = 'none';
+  });
+}
+
+function startAnotherOrder() {
+  cart = {};
+  updateCartBar();
+  updateCartPopup();
+  document.querySelectorAll('.add-initial').forEach(btn => {
+    btn.disabled = false;
+    btn.style.opacity = '';
+    btn.style.pointerEvents = '';
+    btn.style.display = 'block';
+  });
+  document.querySelectorAll('.qty-controls').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.btn-qty').forEach(btn => {
+    btn.disabled = false;
+    btn.style.opacity = '';
+    btn.style.pointerEvents = '';
+  });
+  document.querySelectorAll('.cart-badge').forEach(b => b.textContent = '0');
+  const notice = document.getElementById('order-placed-notice');
+  if (notice) notice.remove();
+  // Re-add Place Order button
+  const cartContent = document.querySelector('.cart-content') || document.querySelector('.cart-items');
+  const totalDiv = document.querySelector('#cart-popup [style*="Total"]')?.parentElement;
+  if (totalDiv) {
+    totalDiv.insertAdjacentHTML('afterend', '<button class="pay-btn" onclick="processPayment()">Place Order</button>');
+  }
+  const p = document.getElementById('cart-popup');
+  if (p) p.style.display = 'none';
 }
 
 function showOrderConfirm() {
