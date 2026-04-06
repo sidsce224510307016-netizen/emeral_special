@@ -1172,28 +1172,23 @@ function setCartViewOnly() {
 }
 
 function startAnotherOrder() {
-  // Reset cart
+  // Reset cart object
   cart = {};
-  updateCartBar();
-  updateCartPopup();
 
-  // Re-enable all ADD buttons
+  // syncCartUI is the real cart render function — resets items list and hides bar
+  syncCartUI();
+
+  // Re-enable all ADD buttons and qty buttons (syncCartUI resets display but not disabled state)
   document.querySelectorAll('.add-initial').forEach(btn => {
     btn.disabled = false;
-    btn.style.opacity = '';
-    btn.style.pointerEvents = '';
-    btn.style.display = 'block';
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
   });
-  // Hide qty controls (no items in cart)
-  document.querySelectorAll('.qty-controls').forEach(el => el.style.display = 'none');
-  // Re-enable qty buttons
   document.querySelectorAll('.btn-qty').forEach(btn => {
     btn.disabled = false;
-    btn.style.opacity = '';
-    btn.style.pointerEvents = '';
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
   });
-  // Reset all cart badges to 0
-  document.querySelectorAll('.cart-badge').forEach(b => b.textContent = '0');
 
   // Restore Place Order button inside the stable wrapper div
   const area = document.getElementById('place-order-area');
@@ -1201,7 +1196,7 @@ function startAnotherOrder() {
     area.innerHTML = '<button class="pay-btn" onclick="processPayment()">Place Order</button>';
   }
 
-  // Close the cart popup so user goes back to menu
+  // Close the cart popup so user goes back to browse the menu
   const p = document.getElementById('cart-popup');
   if (p) p.style.display = 'none';
 }
