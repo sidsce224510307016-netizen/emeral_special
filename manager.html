@@ -413,9 +413,11 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const analytics = firebase.analytics();
 
-db.ref("tables").on("value", (snapshot) => {
-  const tablesData = snapshot.val();
-  if (tablesData) allTables = Array.isArray(tablesData) ? tablesData : Object.values(tablesData);
+// ── Listen to active orders and derive table occupancy from them ──
+db.ref("orders").on("value", (snapshot) => {
+  const data = snapshot.val();
+  allOrders = data ? Object.values(data) : [];
+  rebuildTablesFromOrders();
   renderManagerDashboard();
 });
 db.ref("queue").on("value", (snapshot) => {
@@ -719,8 +721,41 @@ const allMenuItems = Object.values(menuData).flat();
 /* ======================================================
    MANAGER STATE
    ====================================================== */
-let allTables = [];
-let allQueue = [];
+let allTables  = [];
+let allQueue   = [];
+let allOrders  = [];
+
+/* ── Build virtual table occupancy from active orders ──
+   An order is "active" if status is Preparing or Ready (not Completed/Cancelled) */
+function rebuildTablesFromOrders() {
+  // Start with 23 clean tables
+  const base = [];
+  for (let i = 1; i <= 23; i++) {
+    base.push({ number: i, capacity: 4, occupied: false, current: null, orderId: null });
+  }
+
+  // Overlay active orders
+  allOrders.forEach(order => {
+    if (!order.tableNumber) return;
+    if (order.status === "Completed" || order.status === "Cancelled") return;
+    const idx = order.tableNumber - 1;
+    if (idx >= 0 && idx < base.length) {
+      base[idx].occupied = true;
+      base[idx].orderId  = order.id;
+      base[idx].current  = {
+        name:    order.customerName || ("Table " + order.tableNumber),
+        people:  order.people || 1,
+        since:   order.createdAt ? new Date(order.createdAt).getTime() : Date.now(),
+        orderId: order.id,
+        status:  order.status,
+        diet:    order.diet || "Regular",
+        items:   order.items || []
+      };
+    }
+  });
+
+  allTables = base;
+}
 
 // Bill modal state
 let currentBillOrderId = null;
@@ -768,17 +803,24 @@ function renderManagerDashboard() {
     let customerHTML = '';
     if (t.current) {
       const minutesSince = Math.floor((Date.now() - t.current.since) / 60000);
+      const statusColor  = t.current.status === "Ready" ? "#22c55e" : "#f59e0b";
+      const statusLabel  = t.current.status || "Preparing";
+      const itemCount    = Array.isArray(t.current.items) ? t.current.items.length : 0;
       customerHTML = `
         <div class="customer-details">
-          <div class="customer-name">${t.current.name || 'Customer'}</div>
+          <div class="customer-name">Table ${t.number}</div>
           <div class="customer-meta">
-            <span>👥 ${t.current.people} ${t.current.people === 1 ? 'Person' : 'People'}</span>
+            <span>🍽️ ${itemCount} item${itemCount !== 1 ? "s" : ""}</span>
             <span>⏱️ ${minutesSince} min</span>
+            <span style="color:${statusColor};font-weight:700;">● ${statusLabel}</span>
+          </div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:6px;">
+            Diet: ${t.current.diet || "Regular"}
           </div>
         </div>
         <div class="btn-row">
-          <button onclick="openBillModal(${t.number})" class="bill-btn">🧾 Print Bill</button>
-          <button onclick="freeTable(${t.number})" class="free-btn">✕ Free</button>
+          <button onclick="openBillModal(${t.number})" class="bill-btn">🧾 Bill</button>
+          <button onclick="freeTable(${t.number})" class="free-btn">✕ Clear</button>
         </div>
       `;
     }
@@ -824,32 +866,15 @@ function renderManagerDashboard() {
    FREE TABLE
    ====================================================== */
 function freeTable(tableNumber) {
-  db.ref("tables").once("value", (snapshot) => {
-    const raw = snapshot.val();
-    if (!raw) return;
-    let tableKey = null;
-    if (Array.isArray(raw)) { tableKey = tableNumber - 1; }
-    else { Object.entries(raw).forEach(([k, v]) => { if (v.number === tableNumber) tableKey = k; }); }
-    if (tableKey === null) return;
-    const table = raw[tableKey];
-    db.ref("tables/" + tableKey).update({ occupied: false, current: null });
-    db.ref("queue").once("value", (qSnap) => {
-      let queue = qSnap.val() ? Object.values(qSnap.val()) : [];
-      if (queue.length > 0) {
-        const nextCustomer = queue.shift();
-        if ((table.capacity || 4) >= nextCustomer.people) {
-          db.ref("tables/" + tableKey).update({
-            occupied: true,
-            current: { name: nextCustomer.name, people: nextCustomer.people, since: Date.now(), orderId: nextCustomer.orderId }
-          });
-          db.ref("queue").set(queue);
-        } else {
-          queue.unshift(nextCustomer);
-          db.ref("queue").set(queue);
-        }
-      }
-    });
-  });
+  if (!confirm("Clear Table " + tableNumber + "? This will mark its active order as Completed.")) return;
+  const table   = allTables.find(t => t.number === tableNumber);
+  const orderId = table?.current?.orderId || null;
+  if (orderId) {
+    db.ref("orders/" + orderId).update({ status: "Completed" })
+      .then(() => console.log("Order " + orderId + " marked Completed"))
+      .catch(err => console.error(err));
+  }
+  // rebuildTablesFromOrders will fire automatically via the orders listener
 }
 
 /* ======================================================
@@ -863,41 +888,33 @@ function openBillModal(tableNumber) {
   document.getElementById('menuResults').style.display = 'none';
   setDiscountMode('pct');
 
-  // Find table key and orderId
-  db.ref("tables").once("value", (snapshot) => {
-    const raw = snapshot.val();
-    if (!raw) return;
-    let tableKey = null, orderId = null, table = null;
-    if (Array.isArray(raw)) {
-      tableKey = tableNumber - 1;
-      table = raw[tableKey];
-    } else {
-      Object.entries(raw).forEach(([k, v]) => { if (v.number === tableNumber) { tableKey = k; table = v; } });
-    }
-    currentBillTableKey = tableKey;
-    orderId = table?.current?.orderId || null;
-    currentBillOrderId = orderId;
+  // ── Find table & orderId from in-memory allTables (built from orders) ──
+  const table    = allTables.find(t => t.number === tableNumber);
+  const orderId  = table?.current?.orderId || null;
+  currentBillOrderId  = orderId;
+  currentBillTableKey = tableNumber - 1;   // kept for backward compat
 
-    const subtitle = `Table ${tableNumber} | ${table?.current?.name || 'Customer'} | ${table?.current?.people || 1} pax`;
-    document.getElementById('billModalSubtitle').textContent = subtitle;
+  const subtitle = `Table ${tableNumber}  |  Diet: ${table?.current?.diet || "Regular"}`;
+  document.getElementById('billModalSubtitle').textContent = subtitle;
 
-    // Load order items from Firebase
-    if (orderId) {
-      db.ref("orders/" + orderId).once("value", (oSnap) => {
-        const order = oSnap.val();
-        if (order && Array.isArray(order.items)) {
-          billItems = order.items.map(i => ({ id: i.id || ('item_' + Math.random()), name: i.name, qty: i.qty, price: i.price }));
-        }
-        renderBillItems();
-        recalcBill();
-        document.getElementById('billModal').classList.add('active');
-      });
-    } else {
+  if (orderId) {
+    db.ref("orders/" + orderId).once("value", (oSnap) => {
+      const order = oSnap.val();
+      if (order && Array.isArray(order.items)) {
+        billItems = order.items.map(i => ({
+          id: i.id || ("item_" + Math.random()),
+          name: i.name, qty: i.qty, price: i.price
+        }));
+      }
       renderBillItems();
       recalcBill();
-      document.getElementById('billModal').classList.add('active');
-    }
-  });
+      document.getElementById("billModal").classList.add("active");
+    });
+  } else {
+    renderBillItems();
+    recalcBill();
+    document.getElementById("billModal").classList.add("active");
+  }
 }
 
 function closeBillModal() {
@@ -1086,41 +1103,11 @@ function printBill() {
   const updates = { status: 'Completed', items: billItems, total: subtotal, grandTotal, discount: discountAmt, billedAt: new Date().toISOString() };
   if (currentBillOrderId) { db.ref("orders/" + currentBillOrderId).update(updates); }
 
-  // Free the table AFTER print
-  const tableNumToFree = currentBillTableNumber;
-  const tableKeyToFree = currentBillTableKey;
-
   closeBillModal();
 
   // Trigger browser print
   window.print();
-
-  // Free table after print dialog closes (short delay)
-  setTimeout(() => {
-    if (tableKeyToFree !== null) {
-      db.ref("tables/" + tableKeyToFree).update({ occupied: false, current: null });
-      // Check queue
-      db.ref("queue").once("value", (qSnap) => {
-        let queue = qSnap.val() ? Object.values(qSnap.val()) : [];
-        if (queue.length > 0) {
-          db.ref("tables/" + tableKeyToFree).once("value", (tSnap) => {
-            const t = tSnap.val();
-            const nextCustomer = queue.shift();
-            if ((t?.capacity || 4) >= nextCustomer.people) {
-              db.ref("tables/" + tableKeyToFree).update({
-                occupied: true,
-                current: { name: nextCustomer.name, people: nextCustomer.people, since: Date.now(), orderId: nextCustomer.orderId }
-              });
-              db.ref("queue").set(queue);
-            } else {
-              queue.unshift(nextCustomer);
-              db.ref("queue").set(queue);
-            }
-          });
-        }
-      });
-    }
-  }, 500);
+  // Table will auto-clear because the orders listener sees status = Completed
 }
 
 // Initialize on load
