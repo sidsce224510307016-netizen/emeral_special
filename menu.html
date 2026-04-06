@@ -561,7 +561,9 @@ const analytics = firebase.analytics();
         <span>Total</span><span id="cart-total-price-popup">₹0.00</span>
       </div>
     </div>
-    <button class="pay-btn" onclick="processPayment()">Place Order</button>
+    <div id="place-order-area">
+      <button class="pay-btn" onclick="processPayment()">Place Order</button>
+    </div>
   </div>
 </div>
 
@@ -1148,10 +1150,20 @@ function processPayment() {
 
 /* ── View-only + another order ── */
 function setCartViewOnly() {
-  const payBtn = document.querySelector('.pay-btn');
-  if (!payBtn) return;
-  payBtn.insertAdjacentHTML('afterend', '<div id="order-placed-notice" style="margin-top:14px;"><div style="background:#f0fff4;border:1.5px solid #22c55e;border-radius:12px;padding:14px 16px;text-align:center;margin-bottom:10px;"><div style=\"font-size:15px;font-weight:700;color:#15803d;\">&#x2705; Order Placed!</div><div style=\"font-size:13px;color:#555;margin-top:4px;\">Your order is being prepared in the kitchen.</div></div><button onclick=\"startAnotherOrder()\" style=\"width:100%;padding:14px;background:#ffcc00;color:#111;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;\">&#x2795; Place Another Order</button></div>');
-  payBtn.remove();
+  const area = document.getElementById('place-order-area');
+  if (!area) return;
+  area.innerHTML = `
+    <div id="order-placed-notice" style="margin-top:14px;">
+      <div style="background:#f0fff4;border:1.5px solid #22c55e;border-radius:12px;padding:14px 16px;text-align:center;margin-bottom:10px;">
+        <div style="font-size:16px;font-weight:700;color:#15803d;">✅ Order Placed!</div>
+        <div style="font-size:13px;color:#555;margin-top:4px;">Your order is being prepared in the kitchen.</div>
+      </div>
+      <button onclick="startAnotherOrder()" style="width:100%;padding:14px;background:#ffcc00;color:#111;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:0.3px;">
+        ➕ Place Another Order
+      </button>
+    </div>
+  `;
+  // Disable all ADD/qty buttons on the menu grid
   document.querySelectorAll('.add-initial, .btn-qty').forEach(btn => {
     btn.disabled = true;
     btn.style.opacity = '0.4';
@@ -1160,30 +1172,36 @@ function setCartViewOnly() {
 }
 
 function startAnotherOrder() {
+  // Reset cart
   cart = {};
   updateCartBar();
   updateCartPopup();
+
+  // Re-enable all ADD buttons
   document.querySelectorAll('.add-initial').forEach(btn => {
     btn.disabled = false;
     btn.style.opacity = '';
     btn.style.pointerEvents = '';
     btn.style.display = 'block';
   });
+  // Hide qty controls (no items in cart)
   document.querySelectorAll('.qty-controls').forEach(el => el.style.display = 'none');
+  // Re-enable qty buttons
   document.querySelectorAll('.btn-qty').forEach(btn => {
     btn.disabled = false;
     btn.style.opacity = '';
     btn.style.pointerEvents = '';
   });
+  // Reset all cart badges to 0
   document.querySelectorAll('.cart-badge').forEach(b => b.textContent = '0');
-  const notice = document.getElementById('order-placed-notice');
-  if (notice) notice.remove();
-  // Re-add Place Order button
-  const cartContent = document.querySelector('.cart-content') || document.querySelector('.cart-items');
-  const totalDiv = document.querySelector('#cart-popup [style*="Total"]')?.parentElement;
-  if (totalDiv) {
-    totalDiv.insertAdjacentHTML('afterend', '<button class="pay-btn" onclick="processPayment()">Place Order</button>');
+
+  // Restore Place Order button inside the stable wrapper div
+  const area = document.getElementById('place-order-area');
+  if (area) {
+    area.innerHTML = '<button class="pay-btn" onclick="processPayment()">Place Order</button>';
   }
+
+  // Close the cart popup so user goes back to menu
   const p = document.getElementById('cart-popup');
   if (p) p.style.display = 'none';
 }
