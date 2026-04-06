@@ -444,18 +444,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const analytics = firebase.analytics();
 
-// ── Listen to active orders and derive table occupancy from them ──
-db.ref("orders").on("value", (snapshot) => {
-  const data = snapshot.val();
-  allOrders = data ? Object.values(data) : [];
-  rebuildTablesFromOrders();
-  renderManagerDashboard();
-});
-db.ref("queue").on("value", (snapshot) => {
-  const queueData = snapshot.val();
-  allQueue = queueData ? Object.values(queueData) : [];
-  renderManagerDashboard();
-});
+// Listeners are started after DOM loads — see startListeners() below
 </script>
 </head>
 
@@ -1214,6 +1203,27 @@ function printBill() {
 
 // Initialize on load
 initializeTables();
+
+/* ======================================================
+   START FIREBASE LISTENERS (called after DOM is ready)
+   ====================================================== */
+function startListeners() {
+  db.ref("orders").on("value", (snapshot) => {
+    const data = snapshot.val();
+    allOrders = data ? Object.values(data) : [];
+    rebuildTablesFromOrders();
+    renderManagerDashboard();
+  });
+  db.ref("queue").on("value", (snapshot) => {
+    const queueData = snapshot.val();
+    allQueue = queueData ? Object.values(queueData) : [];
+    renderManagerDashboard();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  startListeners();
+});
 
 /* ======================================================
    TAB SWITCHING
