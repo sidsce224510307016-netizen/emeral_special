@@ -1201,28 +1201,20 @@ function printBill() {
   // Table will auto-clear because the orders listener sees status = Completed
 }
 
-// Initialize on load
+// Initialize on load — script is at bottom of <body> so DOM is ready
 initializeTables();
 
-/* ======================================================
-   START FIREBASE LISTENERS (called after DOM is ready)
-   ====================================================== */
-function startListeners() {
-  db.ref("orders").on("value", (snapshot) => {
-    const data = snapshot.val();
-    allOrders = data ? Object.values(data) : [];
-    rebuildTablesFromOrders();
-    renderManagerDashboard();
-  });
-  db.ref("queue").on("value", (snapshot) => {
-    const queueData = snapshot.val();
-    allQueue = queueData ? Object.values(queueData) : [];
-    renderManagerDashboard();
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  startListeners();
+// Start Firebase real-time listeners immediately
+db.ref("orders").on("value", (snapshot) => {
+  const data = snapshot.val();
+  allOrders = data ? Object.values(data) : [];
+  rebuildTablesFromOrders();
+  renderManagerDashboard();
+});
+db.ref("queue").on("value", (snapshot) => {
+  const queueData = snapshot.val();
+  allQueue = queueData ? Object.values(queueData) : [];
+  renderManagerDashboard();
 });
 
 /* ======================================================
