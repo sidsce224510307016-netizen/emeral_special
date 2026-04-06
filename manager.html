@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -391,8 +390,40 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 }
 .page-btn:hover, .page-btn.active { background: var(--primary-yellow); color: #111; border-color: var(--primary-yellow); }
 .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.export-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.export-btn.excel {
+  background: #1d6f42;
+  color: white;
+}
+.export-btn.excel:hover { background: #155533; }
+.export-btn.pdf {
+  background: #c0392b;
+  color: white;
+}
+.export-btn.pdf:hover { background: #922b21; }
+.export-row {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
 </style>
 
+<!-- SheetJS for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -476,6 +507,10 @@ db.ref("queue").on("value", (snapshot) => {
     <button class="filter-btn secondary" onclick="setCurrentMonth()">This Month</button>
     <button class="filter-btn secondary" onclick="setToday()">Today</button>
     <button class="filter-btn secondary" onclick="clearFilter()">All Time</button>
+    <div class="export-row">
+      <button class="export-btn excel" onclick="exportExcel()">📊 Export Excel</button>
+      <button class="export-btn pdf" onclick="exportPDF()">📄 Export PDF</button>
+    </div>
   </div>
 
   <!-- Stats -->
@@ -728,30 +763,48 @@ let allOrders  = [];
 /* ── Build virtual table occupancy from active orders ──
    An order is "active" if status is Preparing or Ready (not Completed/Cancelled) */
 function rebuildTablesFromOrders() {
-  // Start with 23 clean tables
   const base = [];
   for (let i = 1; i <= 23; i++) {
     base.push({ number: i, capacity: 4, occupied: false, current: null, orderId: null });
   }
 
-  // Overlay active orders
+  // Group active orders by table — use earliest order for "since", merge items
+  const tableActiveMap = {};
   allOrders.forEach(order => {
     if (!order.tableNumber) return;
     if (order.status === "Completed" || order.status === "Cancelled") return;
-    const idx = order.tableNumber - 1;
-    if (idx >= 0 && idx < base.length) {
-      base[idx].occupied = true;
-      base[idx].orderId  = order.id;
-      base[idx].current  = {
-        name:    order.customerName || ("Table " + order.tableNumber),
-        people:  order.people || 1,
-        since:   order.createdAt ? new Date(order.createdAt).getTime() : Date.now(),
-        orderId: order.id,
-        status:  order.status,
-        diet:    order.diet || "Regular",
-        items:   order.items || []
-      };
+    const tNum = order.tableNumber;
+    if (!tableActiveMap[tNum]) {
+      tableActiveMap[tNum] = { firstOrder: order, allOrders: [], allItems: [] };
     }
+    tableActiveMap[tNum].allOrders.push(order);
+    if (Array.isArray(order.items)) {
+      tableActiveMap[tNum].allItems.push(...order.items);
+    }
+    // Keep earliest order as first
+    const existing = tableActiveMap[tNum].firstOrder;
+    const existingTime = existing.createdAt ? new Date(existing.createdAt).getTime() : Infinity;
+    const thisTime = order.createdAt ? new Date(order.createdAt).getTime() : Infinity;
+    if (thisTime < existingTime) tableActiveMap[tNum].firstOrder = order;
+  });
+
+  Object.entries(tableActiveMap).forEach(([tNum, tableData]) => {
+    const idx = parseInt(tNum) - 1;
+    if (idx < 0 || idx >= base.length) return;
+    const first = tableData.firstOrder;
+    const anyPreparing = tableData.allOrders.some(o => o.status === "Preparing");
+    base[idx].occupied = true;
+    base[idx].orderId  = first.id;
+    base[idx].current  = {
+      name:    first.customerName || ("Table " + tNum),
+      people:  first.people || 1,
+      since:   first.createdAt ? new Date(first.createdAt).getTime() : Date.now(),
+      orderId: first.id,
+      status:  anyPreparing ? "Preparing" : "Ready",
+      diet:    first.diet || "Regular",
+      items:   tableData.allItems,
+      rounds:  tableData.allOrders.length
+    };
   });
 
   allTables = base;
@@ -813,6 +866,7 @@ function renderManagerDashboard() {
             <span>🍽️ ${itemCount} item${itemCount !== 1 ? "s" : ""}</span>
             <span>⏱️ ${minutesSince} min</span>
             <span style="color:${statusColor};font-weight:700;">● ${statusLabel}</span>
+            ${t.current.rounds > 1 ? `<span style="color:#60a5fa;font-weight:700;">🔄 ${t.current.rounds} rounds</span>` : ''}
           </div>
           <div style="font-size:12px;color:#94a3b8;margin-top:6px;">
             Diet: ${t.current.diet || "Regular"}
@@ -866,55 +920,92 @@ function renderManagerDashboard() {
    FREE TABLE
    ====================================================== */
 function freeTable(tableNumber) {
-  if (!confirm("Clear Table " + tableNumber + "? This will mark its active order as Completed.")) return;
-  const table   = allTables.find(t => t.number === tableNumber);
-  const orderId = table?.current?.orderId || null;
-  if (orderId) {
-    db.ref("orders/" + orderId).update({ status: "Completed" })
-      .then(() => console.log("Order " + orderId + " marked Completed"))
-      .catch(err => console.error(err));
-  }
-  // rebuildTablesFromOrders will fire automatically via the orders listener
+  if (!confirm("Clear Table " + tableNumber + "? This will mark ALL active rounds as Completed.")) return;
+  // Find all active orders for this table and mark them completed
+  db.ref("orders").once("value", (snap) => {
+    const data = snap.val();
+    if (!data) return;
+    Object.values(data).forEach(order => {
+      if (order.tableNumber === tableNumber &&
+          order.status !== "Completed" &&
+          order.status !== "Cancelled") {
+        db.ref("orders/" + order.id).update({ status: "Completed" });
+      }
+    });
+  });
 }
 
 /* ======================================================
    BILL MODAL — OPEN
    ====================================================== */
+// Tracks all order IDs that belong to current bill (all rounds)
+let currentBillAllOrderIds = [];
+
 function openBillModal(tableNumber) {
   currentBillTableNumber = tableNumber;
   billItems = [];
+  currentBillAllOrderIds = [];
   document.getElementById('discountInput').value = '';
   document.getElementById('menuSearchInput').value = '';
   document.getElementById('menuResults').style.display = 'none';
   setDiscountMode('pct');
 
-  // ── Find table & orderId from in-memory allTables (built from orders) ──
-  const table    = allTables.find(t => t.number === tableNumber);
-  const orderId  = table?.current?.orderId || null;
-  currentBillOrderId  = orderId;
-  currentBillTableKey = tableNumber - 1;   // kept for backward compat
+  const table = allTables.find(t => t.number === tableNumber);
+  currentBillTableKey = tableNumber - 1;
 
   const subtitle = `Table ${tableNumber}  |  Diet: ${table?.current?.diet || "Regular"}`;
   document.getElementById('billModalSubtitle').textContent = subtitle;
 
-  if (orderId) {
-    db.ref("orders/" + orderId).once("value", (oSnap) => {
-      const order = oSnap.val();
-      if (order && Array.isArray(order.items)) {
-        billItems = order.items.map(i => ({
-          id: i.id || ("item_" + Math.random()),
-          name: i.name, qty: i.qty, price: i.price
-        }));
-      }
+  // ── Load ALL active orders for this table (all rounds) ──
+  db.ref("orders").once("value", (snap) => {
+    const data = snap.val();
+    if (!data) {
       renderBillItems();
       recalcBill();
       document.getElementById("billModal").classList.add("active");
+      return;
+    }
+
+    // Find all active (non-completed, non-cancelled) orders for this table
+    const tableOrders = Object.values(data).filter(o =>
+      o.tableNumber === tableNumber &&
+      o.status !== "Completed" &&
+      o.status !== "Cancelled"
+    ).sort((a, b) => {
+      const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return ta - tb;
     });
-  } else {
+
+    currentBillAllOrderIds = tableOrders.map(o => o.id);
+    // Use the first order as the "main" order ID for legacy compat
+    currentBillOrderId = tableOrders.length > 0 ? tableOrders[0].id : null;
+
+    // Merge all items from all rounds
+    const mergedItemMap = {};
+    tableOrders.forEach(order => {
+      if (Array.isArray(order.items)) {
+        order.items.forEach(i => {
+          const key = i.name + '__' + i.price;
+          if (mergedItemMap[key]) {
+            mergedItemMap[key].qty += i.qty;
+          } else {
+            mergedItemMap[key] = {
+              id: i.id || ("item_" + Math.random()),
+              name: i.name,
+              qty: i.qty,
+              price: i.price
+            };
+          }
+        });
+      }
+    });
+    billItems = Object.values(mergedItemMap);
+
     renderBillItems();
     recalcBill();
     document.getElementById("billModal").classList.add("active");
-  }
+  });
 }
 
 function closeBillModal() {
@@ -1099,9 +1190,20 @@ function printBill() {
     <div class="print-footer">Visit us again • EMERALD Restaurant<br>*This is your bill receipt*</div>
   `;
 
-  // Update Firebase order as Completed + save final bill items
-  const updates = { status: 'Completed', items: billItems, total: subtotal, grandTotal, discount: discountAmt, billedAt: new Date().toISOString() };
-  if (currentBillOrderId) { db.ref("orders/" + currentBillOrderId).update(updates); }
+  // Mark ALL rounds (orders) for this table as Completed
+  const billedAt = new Date().toISOString();
+  const idsToComplete = currentBillAllOrderIds.length > 0 ? currentBillAllOrderIds : (currentBillOrderId ? [currentBillOrderId] : []);
+  idsToComplete.forEach((oid, idx) => {
+    const upd = { status: 'Completed', billedAt };
+    // Only store full bill details on the first/main order
+    if (idx === 0) {
+      upd.items = billItems;
+      upd.total = subtotal;
+      upd.grandTotal = grandTotal;
+      upd.discount = discountAmt;
+    }
+    db.ref("orders/" + oid).update(upd);
+  });
 
   closeBillModal();
 
@@ -1324,6 +1426,211 @@ function toggleOrderDetail(orderId, row) {
   // Close any open
   document.querySelectorAll('.detail-row').forEach(r => r.style.display = 'none');
   if (!isOpen) detailRow.style.display = 'table-row';
+}
+
+
+/* ======================================================
+   EXPORT FUNCTIONS — EXCEL & PDF
+   ====================================================== */
+
+function getExportRows() {
+  // Use filteredHistory if available and non-empty, else all completed orders
+  const src = (filteredHistory && filteredHistory.length > 0) ? filteredHistory : historyData;
+  return src;
+}
+
+function exportExcel() {
+  const rows = getExportRows();
+  if (!rows || rows.length === 0) {
+    alert('No data to export. Please load history first (click Bill History tab).');
+    return;
+  }
+
+  const wsData = [
+    ['#', 'Date', 'Time', 'Order ID', 'Customer', 'Order Type', 'Table No', 'Items Count', 'Item Details', 'Subtotal (₹)', 'Discount (₹)', 'Grand Total (₹)', 'Status', 'Diet', 'People']
+  ];
+
+  rows.forEach((order, idx) => {
+    const rawDate = order.billedAt || (order.timestamp ? new Date(order.timestamp).toISOString() : null);
+    const dateObj = rawDate ? new Date(rawDate) : null;
+    const dateStr = dateObj ? dateObj.toLocaleDateString('en-IN') : '';
+    const timeStr = dateObj ? dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '';
+    const items = Array.isArray(order.items) ? order.items : [];
+    const itemDetails = items.map(i => i.name + ' x' + i.qty + ' @₹' + i.price).join(' | ');
+    const subtotal = items.reduce((s, i) => s + (i.price * i.qty), 0);
+    const discount = order.discount || 0;
+    const grandTotal = order.grandTotal || order.total || subtotal;
+
+    wsData.push([
+      idx + 1,
+      dateStr,
+      timeStr,
+      order.id || '',
+      order.customerName || order.name || 'Guest',
+      order.orderType === 'dinein' ? 'Dine-In' : 'Takeaway',
+      order.orderType === 'dinein' ? (order.tableNumber || '') : '',
+      items.length,
+      itemDetails,
+      subtotal.toFixed(2),
+      discount.toFixed(2),
+      grandTotal.toFixed(2),
+      order.status || '',
+      order.diet || 'Regular',
+      order.people || ''
+    ]);
+  });
+
+  // Summary rows
+  const completed = rows.filter(o => o.status === 'Completed');
+  const totalRev = completed.reduce((s, o) => s + (o.grandTotal || o.total || 0), 0);
+  const totalDisc = completed.reduce((s, o) => s + (o.discount || 0), 0);
+  wsData.push([]);
+  wsData.push(['SUMMARY', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+  wsData.push(['Total Orders', completed.length]);
+  wsData.push(['Total Revenue (₹)', totalRev.toFixed(2)]);
+  wsData.push(['Total Discount (₹)', totalDisc.toFixed(2)]);
+  wsData.push(['Average Bill (₹)', completed.length ? (totalRev / completed.length).toFixed(2) : '0.00']);
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Column widths
+  ws['!cols'] = [
+    {wch:4},{wch:12},{wch:8},{wch:22},{wch:16},{wch:10},{wch:8},{wch:8},
+    {wch:60},{wch:12},{wch:12},{wch:14},{wch:12},{wch:14},{wch:8}
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Revenue Report');
+
+  const fromVal = document.getElementById('histFrom').value;
+  const toVal = document.getElementById('histTo').value;
+  const label = (fromVal && toVal) ? (fromVal + '_to_' + toVal) : 'all_time';
+  XLSX.writeFile(wb, 'EMERALD_Revenue_' + label + '.xlsx');
+}
+
+function exportPDF() {
+  const rows = getExportRows();
+  if (!rows || rows.length === 0) {
+    alert('No data to export. Please load history first (click Bill History tab).');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+  const fromVal = document.getElementById('histFrom').value;
+  const toVal = document.getElementById('histTo').value;
+  const periodLabel = (fromVal && toVal) ? (fromVal + ' to ' + toVal) : 'All Time';
+
+  // Header
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.setTextColor(40, 40, 40);
+  doc.text('EMERALD', 14, 18);
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(100, 100, 100);
+  doc.text('Revenue Report  |  Period: ' + periodLabel, 14, 26);
+  doc.text('Generated: ' + new Date().toLocaleString('en-IN'), 14, 32);
+
+  // Stats
+  const completed = rows.filter(o => o.status === 'Completed');
+  const totalRev = completed.reduce((s, o) => s + (o.grandTotal || o.total || 0), 0);
+  const totalDisc = completed.reduce((s, o) => s + (o.discount || 0), 0);
+  const avgBill = completed.length ? (totalRev / completed.length) : 0;
+
+  doc.setFillColor(255, 204, 0);
+  doc.roundedRect(14, 36, 60, 16, 2, 2, 'F');
+  doc.roundedRect(80, 36, 60, 16, 2, 2, 'F');
+  doc.roundedRect(146, 36, 60, 16, 2, 2, 'F');
+  doc.roundedRect(212, 36, 60, 16, 2, 2, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(50, 50, 50);
+  doc.text('TOTAL ORDERS', 44, 42, { align: 'center' });
+  doc.text('TOTAL REVENUE', 110, 42, { align: 'center' });
+  doc.text('TOTAL DISCOUNT', 176, 42, { align: 'center' });
+  doc.text('AVG BILL VALUE', 242, 42, { align: 'center' });
+
+  doc.setFontSize(13);
+  doc.text(String(completed.length), 44, 49, { align: 'center' });
+  doc.text('Rs ' + totalRev.toFixed(2), 110, 49, { align: 'center' });
+  doc.text('Rs ' + totalDisc.toFixed(2), 176, 49, { align: 'center' });
+  doc.text(completed.length ? 'Rs ' + avgBill.toFixed(2) : '-', 242, 49, { align: 'center' });
+
+  // Table
+  const tableRows = rows.map((order, idx) => {
+    const rawDate = order.billedAt || (order.timestamp ? new Date(order.timestamp).toISOString() : null);
+    const dateObj = rawDate ? new Date(rawDate) : null;
+    const dateStr = dateObj ? dateObj.toLocaleDateString('en-IN') : '';
+    const timeStr = dateObj ? dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '';
+    const items = Array.isArray(order.items) ? order.items : [];
+    const subtotal = items.reduce((s, i) => s + (i.price * i.qty), 0);
+    const discount = order.discount || 0;
+    const grandTotal = order.grandTotal || order.total || subtotal;
+    const itemSummary = items.length > 0
+      ? items.slice(0, 3).map(i => i.name + ' x' + i.qty).join(', ') + (items.length > 3 ? ' +' + (items.length - 3) + ' more' : '')
+      : 'No items';
+
+    return [
+      idx + 1,
+      dateStr + '
+' + timeStr,
+      order.customerName || 'Guest',
+      order.orderType === 'dinein' ? 'Dine-In' : 'Takeaway',
+      order.orderType === 'dinein' ? (order.tableNumber || '-') : '-',
+      itemSummary,
+      'Rs ' + subtotal.toFixed(2),
+      discount > 0 ? 'Rs ' + discount.toFixed(2) : '-',
+      'Rs ' + grandTotal.toFixed(2),
+      order.status || ''
+    ];
+  });
+
+  doc.autoTable({
+    startY: 58,
+    head: [['#', 'Date/Time', 'Customer', 'Type', 'Table', 'Items', 'Subtotal', 'Discount', 'Total', 'Status']],
+    body: tableRows,
+    styles: { fontSize: 8, cellPadding: 2.5, lineColor: [230, 230, 230], lineWidth: 0.1 },
+    headStyles: { fillColor: [30, 41, 59], textColor: [255, 204, 0], fontStyle: 'bold', fontSize: 8 },
+    alternateRowStyles: { fillColor: [245, 245, 245] },
+    columnStyles: {
+      0: { cellWidth: 8 },
+      1: { cellWidth: 22 },
+      2: { cellWidth: 28 },
+      3: { cellWidth: 18 },
+      4: { cellWidth: 12 },
+      5: { cellWidth: 62 },
+      6: { cellWidth: 22 },
+      7: { cellWidth: 22 },
+      8: { cellWidth: 22 },
+      9: { cellWidth: 20 }
+    },
+    didDrawCell: (data) => {
+      if (data.section === 'body' && data.column.index === 9) {
+        const val = data.cell.raw;
+        if (val === 'Completed') {
+          doc.setTextColor(34, 197, 94);
+        } else {
+          doc.setTextColor(239, 68, 68);
+        }
+      }
+    }
+  });
+
+  // Footer
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text('EMERALD Restaurant — Confidential Revenue Report', 14, doc.internal.pageSize.height - 8);
+    doc.text('Page ' + i + ' of ' + pageCount, doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 8, { align: 'right' });
+  }
+
+  const label2 = (fromVal && toVal) ? (fromVal + '_to_' + toVal) : 'all_time';
+  doc.save('EMERALD_Revenue_' + label2 + '.pdf');
 }
 
 </script>
