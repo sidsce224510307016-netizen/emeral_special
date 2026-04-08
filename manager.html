@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,7 +42,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .info-value { color: var(--text-light); font-weight: 600; }
 .customer-details { background: rgba(255,204,0,0.1); padding: 16px; border-radius: 12px; margin-bottom: 16px; border-left: 3px solid var(--primary-yellow); }
 .customer-name { font-size: 16px; font-weight: 600; color: var(--text-light); margin-bottom: 8px; }
-.customer-meta { display: flex; gap: 16px; font-size: 13px; color: var(--text-muted); }
+.customer-meta { display: flex; gap: 16px; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; }
 .btn-row { display: flex; gap: 10px; }
 .free-btn { flex: 1; padding: 12px; background: var(--danger); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 0.5px; }
 .free-btn:hover { background: #dc2626; }
@@ -58,28 +57,16 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 16px; }
 .empty-state-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
 
-/* ======== BILL MODAL ======== */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9000;
-  display: none; justify-content: center; align-items: flex-start; padding: 20px; overflow-y: auto;
-}
+/* BILL MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9000; display: none; justify-content: center; align-items: flex-start; padding: 20px; overflow-y: auto; }
 .modal-overlay.active { display: flex; }
-.bill-modal {
-  background: #1e293b; border-radius: 20px; width: 100%; max-width: 680px;
-  margin: auto; box-shadow: 0 30px 80px rgba(0,0,0,0.6); overflow: hidden;
-}
-.bill-modal-header {
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  padding: 24px 28px; display: flex; justify-content: space-between; align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
+.bill-modal { background: #1e293b; border-radius: 20px; width: 100%; max-width: 680px; margin: auto; box-shadow: 0 30px 80px rgba(0,0,0,0.6); overflow: hidden; }
+.bill-modal-header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 24px 28px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .bill-modal-title { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--primary-yellow); }
 .bill-modal-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 .close-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; }
 .close-btn:hover { background: rgba(255,255,255,0.2); }
 .bill-modal-body { padding: 24px 28px; }
-
-/* Add Items Section */
 .add-items-section { margin-bottom: 24px; }
 .add-items-title { font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
 .menu-search-row { display: flex; gap: 10px; margin-bottom: 10px; }
@@ -92,8 +79,6 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .menu-result-item:last-child { border-bottom: none; }
 .menu-result-name { font-size: 14px; color: var(--text-light); }
 .menu-result-price { font-size: 13px; color: var(--primary-yellow); font-weight: 700; }
-
-/* Bill Items Table */
 .bill-items-section { margin-bottom: 20px; }
 .bill-table { width: 100%; border-collapse: collapse; }
 .bill-table thead tr { border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -114,8 +99,6 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .remove-item-btn { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px; padding: 4px; border-radius: 4px; transition: background 0.15s; }
 .remove-item-btn:hover { background: rgba(239,68,68,0.15); }
 .empty-bill-msg { text-align: center; color: var(--text-muted); padding: 30px; font-size: 14px; }
-
-/* Totals */
 .bill-totals { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
 .total-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
 .total-label { font-size: 14px; color: var(--text-muted); }
@@ -124,8 +107,6 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .grand-total-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 4px; }
 .grand-total-label { font-size: 18px; font-weight: 700; color: var(--text-light); }
 .grand-total-value { font-size: 22px; font-weight: 800; color: var(--primary-yellow); }
-
-/* Discount Row */
 .discount-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
 .discount-label { font-size: 14px; color: var(--text-muted); min-width: 80px; }
 .discount-input { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: white; padding: 6px 10px; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; width: 90px; outline: none; text-align: center; }
@@ -133,8 +114,6 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .discount-toggle { display: flex; background: rgba(255,255,255,0.07); border-radius: 8px; overflow: hidden; }
 .discount-toggle button { padding: 6px 14px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; color: var(--text-muted); background: transparent; }
 .discount-toggle button.active { background: var(--primary-yellow); color: #111; }
-
-/* Modal Footer */
 .bill-modal-footer { padding: 16px 28px 28px; display: flex; gap: 12px; }
 .print-btn { flex: 1; padding: 16px; background: var(--primary-yellow); color: #111; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 0 var(--primary-dark); position: relative; top: 0; }
 .print-btn:active { top: 4px; box-shadow: 0 1px 0 var(--primary-dark); }
@@ -142,19 +121,12 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .save-btn { padding: 16px 24px; background: rgba(255,255,255,0.08); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
 .save-btn:hover { background: rgba(255,255,255,0.14); }
 
-/* ======== PRINT LAYOUT ======== */
+/* PRINT */
 @media print {
   body > *:not(#print-area) { display: none !important; }
   #print-area { display: block !important; }
 }
-#print-area {
-  display: none;
-  font-family: 'Courier New', monospace;
-  max-width: 320px;
-  margin: 0 auto;
-  color: #000;
-  background: #fff;
-}
+#print-area { display: none; font-family: 'Courier New', monospace; max-width: 320px; margin: 0 auto; color: #000; background: #fff; }
 .print-header { text-align: center; margin-bottom: 12px; }
 .print-restaurant { font-size: 22px; font-weight: 900; letter-spacing: 4px; margin-bottom: 2px; }
 .print-tagline { font-size: 10px; color: #555; }
@@ -171,266 +143,78 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .print-footer { text-align: center; font-size: 10px; margin-top: 12px; color: #555; }
 .print-thankyou { font-size: 14px; font-weight: 900; text-align: center; margin: 8px 0 4px; }
 
+/* TABS */
+.tab-nav { display: flex; gap: 8px; max-width: 1200px; margin: 0 auto 32px; background: rgba(255,255,255,0.05); border-radius: 14px; padding: 6px; }
+.tab-btn { flex: 1; padding: 12px 20px; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; color: var(--text-muted); background: transparent; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.tab-btn.active { background: var(--primary-yellow); color: #111; box-shadow: 0 4px 12px rgba(255,204,0,0.3); }
+.tab-btn:not(.active):hover { background: rgba(255,255,255,0.08); color: var(--text-light); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* HISTORY */
+.history-controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 24px; max-width: 1200px; }
+.history-controls label { font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.date-input { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 10px 14px; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; cursor: pointer; }
+.date-input:focus { border-color: var(--primary-yellow); }
+.date-input::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+.filter-btn { padding: 10px 20px; background: var(--primary-yellow); color: #111; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.filter-btn:hover { background: var(--primary-dark); color: white; }
+.filter-btn.secondary { background: rgba(255,255,255,0.08); color: var(--text-light); }
+.filter-btn.secondary:hover { background: rgba(255,255,255,0.15); }
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.stat-card { background: var(--card-bg); border-radius: 14px; padding: 20px; border-left: 3px solid var(--primary-yellow); }
+.stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.stat-value { font-size: 28px; font-weight: 800; color: var(--primary-yellow); }
+.stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.history-table-wrap { background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin-bottom: 40px; }
+.history-table { width: 100%; border-collapse: collapse; }
+.history-table thead { background: rgba(255,204,0,0.08); border-bottom: 1px solid rgba(255,255,255,0.1); }
+.history-table th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 14px 16px; }
+.history-table th:last-child { text-align: right; }
+.history-table td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+.history-table td:last-child { text-align: right; }
+.history-table tbody tr:hover { background: rgba(255,255,255,0.03); cursor: pointer; }
+.history-table tbody tr:last-child td { border-bottom: none; }
+.hist-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.hist-badge.completed { background: rgba(34,197,94,0.2); color: var(--success); }
+.hist-badge.cancelled { background: rgba(239,68,68,0.2); color: var(--danger); }
+.hist-badge.dinein { background: rgba(255,204,0,0.15); color: var(--primary-yellow); }
+.hist-badge.takeaway { background: rgba(59,130,246,0.2); color: var(--blue); }
+.hist-amount { font-weight: 700; color: var(--primary-yellow); }
+.detail-row td { padding: 0 !important; }
+.no-history { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.no-history-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.4; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px; margin-bottom: 40px; }
+.page-btn { padding: 8px 14px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: var(--text-light); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.page-btn:hover, .page-btn.active { background: var(--primary-yellow); color: #111; border-color: var(--primary-yellow); }
+.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.export-btn { padding: 10px 20px; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.export-btn.excel { background: #1d6f42; color: white; }
+.export-btn.excel:hover { background: #155533; }
+.export-btn.pdf { background: #c0392b; color: white; }
+.export-btn.pdf:hover { background: #922b21; }
+.export-row { display: flex; gap: 10px; margin-left: auto; }
+
 @media (max-width: 768px) {
   .brand-name { font-size: 36px; }
   .tables-grid { grid-template-columns: 1fr; }
   body { padding: 15px; }
   .bill-modal-body { padding: 16px; }
   .bill-modal-footer { padding: 12px 16px 20px; flex-direction: column; }
-}
-
-/* ======== TABS ======== */
-.tab-nav {
-  display: flex;
-  gap: 8px;
-  max-width: 1200px;
-  margin: 0 auto 32px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 14px;
-  padding: 6px;
-}
-.tab-btn {
-  flex: 1;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 10px;
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  color: var(--text-muted);
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-.tab-btn.active {
-  background: var(--primary-yellow);
-  color: #111;
-  box-shadow: 0 4px 12px rgba(255,204,0,0.3);
-}
-.tab-btn:not(.active):hover {
-  background: rgba(255,255,255,0.08);
-  color: var(--text-light);
-}
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-/* ======== HISTORY TAB ======== */
-.history-controls {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-bottom: 24px;
-  max-width: 1200px;
-}
-.history-controls label {
-  font-size: 13px;
-  color: var(--text-muted);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.date-input {
-  background: var(--card-bg);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: white;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  outline: none;
-  cursor: pointer;
-}
-.date-input:focus { border-color: var(--primary-yellow); }
-.date-input::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
-.filter-btn {
-  padding: 10px 20px;
-  background: var(--primary-yellow);
-  color: #111;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.filter-btn:hover { background: var(--primary-dark); color: white; }
-.filter-btn.secondary {
-  background: rgba(255,255,255,0.08);
-  color: var(--text-light);
-}
-.filter-btn.secondary:hover { background: rgba(255,255,255,0.15); }
-
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
-}
-.stat-card {
-  background: var(--card-bg);
-  border-radius: 14px;
-  padding: 20px;
-  border-left: 3px solid var(--primary-yellow);
-}
-.stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-.stat-value { font-size: 28px; font-weight: 800; color: var(--primary-yellow); }
-.stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-
-.history-table-wrap {
-  background: var(--card-bg);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  margin-bottom: 40px;
-}
-.history-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.history-table thead {
-  background: rgba(255,204,0,0.08);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.history-table th {
-  text-align: left;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-muted);
-  padding: 14px 16px;
-}
-.history-table th:last-child { text-align: right; }
-.history-table td {
-  padding: 14px 16px;
-  font-size: 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  vertical-align: middle;
-}
-.history-table td:last-child { text-align: right; }
-.history-table tbody tr:hover { background: rgba(255,255,255,0.03); cursor: pointer; }
-.history-table tbody tr:last-child td { border-bottom: none; }
-
-.hist-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-.hist-badge.completed { background: rgba(34,197,94,0.2); color: var(--success); }
-.hist-badge.cancelled { background: rgba(239,68,68,0.2); color: var(--danger); }
-.hist-badge.dinein { background: rgba(255,204,0,0.15); color: var(--primary-yellow); }
-.hist-badge.takeaway { background: rgba(59,130,246,0.2); color: var(--blue); }
-
-.hist-amount { font-weight: 700; color: var(--primary-yellow); }
-
-/* Order detail drawer */
-.detail-drawer {
-  background: rgba(0,0,0,0.4);
-  border-radius: 12px;
-  padding: 0;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease, padding 0.35s ease;
-}
-.detail-drawer.open {
-  max-height: 400px;
-  padding: 16px 20px;
-}
-.drawer-items { list-style: none; }
-.drawer-item-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
-  font-size: 13px;
-  color: #d1d5db;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.drawer-item-row:last-child { border-bottom: none; }
-.drawer-item-name { flex: 1; }
-.drawer-item-qty { color: var(--text-muted); margin: 0 12px; }
-.drawer-item-price { color: var(--primary-yellow); font-weight: 600; }
-.drawer-totals { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
-.drawer-total-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
-.drawer-grand { font-size: 15px; font-weight: 800; color: var(--primary-yellow); }
-.drawer-meta { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
-
-.no-history {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text-muted);
-}
-.no-history-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.4; }
-
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 20px;
-  margin-bottom: 40px;
-}
-.page-btn {
-  padding: 8px 14px;
-  background: var(--card-bg);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--text-light);
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.page-btn:hover, .page-btn.active { background: var(--primary-yellow); color: #111; border-color: var(--primary-yellow); }
-.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.export-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.export-btn.excel {
-  background: #1d6f42;
-  color: white;
-}
-.export-btn.excel:hover { background: #155533; }
-.export-btn.pdf {
-  background: #c0392b;
-  color: white;
-}
-.export-btn.pdf:hover { background: #922b21; }
-.export-row {
-  display: flex;
-  gap: 10px;
-  margin-left: auto;
+  .history-controls { flex-direction: column; align-items: stretch; }
+  .export-row { margin-left: 0; }
 }
 </style>
 
-<!-- SheetJS for Excel export -->
+<!-- SheetJS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<!-- jsPDF for PDF export -->
+<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
-
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyCCdNd2Arh9u7dCBouUGL95Gmk2o8G9SDk",
@@ -444,12 +228,8 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const analytics = firebase.analytics();
-
-// Listeners are started after DOM loads — see startListeners() below
 </script>
 </head>
-
 <body>
 
 <div class="header">
@@ -461,102 +241,87 @@ const analytics = firebase.analytics();
   </div>
 </div>
 
-<!-- TAB NAVIGATION -->
-<nav class="tab-nav" style="max-width:1200px;margin:0 auto 32px;">
-  <button class="tab-btn active" onclick="switchTab('live')" id="tab-live">
-    🏠 Live Dashboard
-  </button>
-  <button class="tab-btn" onclick="switchTab('history')" id="tab-history">
-    📊 Bill History
-  </button>
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('live')" id="tab-live">🏠 Live Dashboard</button>
+  <button class="tab-btn" onclick="switchTab('history')" id="tab-history">📊 Bill History</button>
 </nav>
 
-<!-- LIVE DASHBOARD TAB -->
+<!-- LIVE TAB -->
 <div class="tab-panel active" id="panel-live">
-<div class="dashboard-container">
-  <h2 class="section-header">Tables Status</h2>
-  <div id="tables" class="tables-grid"></div>
-  <div class="queue-section">
-    <h2 class="section-header">Waiting Queue</h2>
-    <div id="queue" class="queue-list"></div>
+  <div class="dashboard-container">
+    <h2 class="section-header">Tables Status</h2>
+    <div id="tables" class="tables-grid">
+      <div class="empty-state"><div class="empty-state-icon">🔄</div><div>Connecting to Firebase...</div></div>
+    </div>
+    <div class="queue-section">
+      <h2 class="section-header">Waiting Queue</h2>
+      <div id="queue" class="queue-list"></div>
+    </div>
   </div>
-</div>
 </div>
 
 <!-- HISTORY TAB -->
 <div class="tab-panel" id="panel-history">
-<div class="dashboard-container">
-  <h2 class="section-header">Bill History</h2>
-
-  <!-- Filters -->
-  <div class="history-controls">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <label>From</label>
-      <input type="date" class="date-input" id="histFrom">
+  <div class="dashboard-container">
+    <h2 class="section-header">Bill History</h2>
+    <div class="history-controls">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <label>From</label>
+        <input type="date" class="date-input" id="histFrom">
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <label>To</label>
+        <input type="date" class="date-input" id="histTo">
+      </div>
+      <button class="filter-btn" onclick="applyHistoryFilter()">Apply Filter</button>
+      <button class="filter-btn secondary" onclick="setCurrentMonth()">This Month</button>
+      <button class="filter-btn secondary" onclick="setToday()">Today</button>
+      <button class="filter-btn secondary" onclick="clearFilter()">All Time</button>
+      <div class="export-row">
+        <button class="export-btn excel" onclick="exportExcel()">📊 Excel</button>
+        <button class="export-btn pdf" onclick="exportPDF()">📄 PDF</button>
+      </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <label>To</label>
-      <input type="date" class="date-input" id="histTo">
+    <div class="stats-row" id="histStats">
+      <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value" id="statOrders">—</div>
+        <div class="stat-sub">Completed bills</div>
+      </div>
+      <div class="stat-card" style="border-color:#3b82f6;">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value" id="statRevenue" style="color:#3b82f6;">—</div>
+        <div class="stat-sub">Grand total collected</div>
+      </div>
+      <div class="stat-card" style="border-color:#22c55e;">
+        <div class="stat-label">Avg Bill Value</div>
+        <div class="stat-value" id="statAvg" style="color:#22c55e;">—</div>
+        <div class="stat-sub">Per order</div>
+      </div>
+      <div class="stat-card" style="border-color:#f59e0b;">
+        <div class="stat-label">Total Discount</div>
+        <div class="stat-value" id="statDiscount" style="color:#f59e0b;">—</div>
+        <div class="stat-sub">Given away</div>
+      </div>
     </div>
-    <button class="filter-btn" onclick="applyHistoryFilter()">Apply Filter</button>
-    <button class="filter-btn secondary" onclick="setCurrentMonth()">This Month</button>
-    <button class="filter-btn secondary" onclick="setToday()">Today</button>
-    <button class="filter-btn secondary" onclick="clearFilter()">All Time</button>
-    <div class="export-row">
-      <button class="export-btn excel" onclick="exportExcel()">📊 Export Excel</button>
-      <button class="export-btn pdf" onclick="exportPDF()">📄 Export PDF</button>
+    <div class="history-table-wrap">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Date &amp; Time</th><th>Customer</th><th>Type</th>
+            <th>Table</th><th>Items</th><th>Status</th><th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <tr><td colspan="8" class="no-history"><div class="no-history-icon">📂</div><div>Loading history...</div></td></tr>
+        </tbody>
+      </table>
     </div>
+    <div class="pagination" id="histPagination"></div>
   </div>
-
-  <!-- Stats -->
-  <div class="stats-row" id="histStats">
-    <div class="stat-card">
-      <div class="stat-label">Total Orders</div>
-      <div class="stat-value" id="statOrders">—</div>
-      <div class="stat-sub">Completed bills</div>
-    </div>
-    <div class="stat-card" style="border-color:#3b82f6;">
-      <div class="stat-label">Total Revenue</div>
-      <div class="stat-value" id="statRevenue" style="color:#3b82f6;">—</div>
-      <div class="stat-sub">Grand total collected</div>
-    </div>
-    <div class="stat-card" style="border-color:#22c55e;">
-      <div class="stat-label">Avg Bill Value</div>
-      <div class="stat-value" id="statAvg" style="color:#22c55e;">—</div>
-      <div class="stat-sub">Per order</div>
-    </div>
-    <div class="stat-card" style="border-color:#f59e0b;">
-      <div class="stat-label">Total Discount</div>
-      <div class="stat-value" id="statDiscount" style="color:#f59e0b;">—</div>
-      <div class="stat-sub">Given away</div>
-    </div>
-  </div>
-
-  <!-- Table -->
-  <div class="history-table-wrap">
-    <table class="history-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Date & Time</th>
-          <th>Customer</th>
-          <th>Type</th>
-          <th>Table</th>
-          <th>Items</th>
-          <th>Status</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody id="historyBody">
-        <tr><td colspan="8" class="no-history"><div class="no-history-icon">📂</div><div>Loading history...</div></td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="pagination" id="histPagination"></div>
-</div>
 </div>
 
-<!-- ======== BILL MODAL ======== -->
+<!-- BILL MODAL -->
 <div class="modal-overlay" id="billModal">
   <div class="bill-modal">
     <div class="bill-modal-header">
@@ -566,9 +331,7 @@ const analytics = firebase.analytics();
       </div>
       <button class="close-btn" onclick="closeBillModal()">✕</button>
     </div>
-
     <div class="bill-modal-body">
-      <!-- Add Items from Menu -->
       <div class="add-items-section">
         <div class="add-items-title">➕ Add Items to Bill</div>
         <div class="menu-search-row">
@@ -576,27 +339,17 @@ const analytics = firebase.analytics();
         </div>
         <div class="menu-results" id="menuResults" style="display:none;"></div>
       </div>
-
-      <!-- Bill Items Table -->
       <div class="bill-items-section">
         <div class="add-items-title">📋 Order Items</div>
         <table class="bill-table">
           <thead>
-            <tr>
-              <th>Item</th>
-              <th>Qty</th>
-              <th>Rate (₹)</th>
-              <th>Amt (₹)</th>
-              <th></th>
-            </tr>
+            <tr><th>Item</th><th>Qty</th><th>Rate (₹)</th><th>Amt (₹)</th><th></th></tr>
           </thead>
           <tbody id="billItemsBody">
             <tr><td colspan="5" class="empty-bill-msg">Loading order items...</td></tr>
           </tbody>
         </table>
       </div>
-
-      <!-- Totals & Discount -->
       <div class="bill-totals">
         <div class="total-row">
           <span class="total-label">Subtotal</span>
@@ -618,239 +371,263 @@ const analytics = firebase.analytics();
         </div>
       </div>
     </div>
-
     <div class="bill-modal-footer">
       <button class="save-btn" onclick="saveAndClose()">💾 Save Only</button>
-      <button class="print-btn" onclick="printBill()">🖨️ Print Bill & Free Table</button>
+      <button class="print-btn" onclick="printBill()">🖨️ Print Bill &amp; Free Table</button>
     </div>
   </div>
 </div>
 
-<!-- Print Area (hidden, shown only on print) -->
 <div id="print-area"></div>
 
 <script>
-/* ======================================================
-   FULL MENU DATA (copied from menu.html)
-   ====================================================== */
-const menuData = {
-  starters: [
-    { id:'st1', name:'Corn Tikki', price:200 }, { id:'st2', name:'Paneer Tikka Dry', price:235 },
-    { id:'st3', name:'Paneer Phudina Tikka', price:235 }, { id:'st4', name:'Paneer Lahsuni Tikka', price:235 },
-    { id:'st5', name:'Hara Bhara Kabab', price:200 }, { id:'st6', name:'Raja Kabab', price:210 },
-    { id:'st7', name:'Veg. Sheekh Kabab', price:230 }, { id:'st8', name:'Paneer Sheekh Kabab', price:260 },
-    { id:'st9', name:'Veg. Brice Kabab', price:200 }, { id:'st10', name:'Veg. Dilruba Sheekh Kabab', price:260 },
-    { id:'st11', name:'Dahi Kabab', price:190 }, { id:'st12', name:'Jahangiri Tikka', price:230 },
-    { id:'st13', name:'Tandoori Plater', price:285 }
-  ],
-  snacks: [
-    { id:'sn1', name:'Veg. Pizza', price:135 }, { id:'sn2', name:'Italian Pizza', price:135 },
-    { id:'sn3', name:'Cheese Pizza', price:150 }, { id:'sn4', name:'Jain Pizza', price:120 },
-    { id:'sn5', name:'Veg. Club Sandwich', price:90 }, { id:'sn6', name:'Veg. Sandwich', price:80 },
-    { id:'sn7', name:'Cheese Sandwich', price:80 }, { id:'sn8', name:'Cheese Jam Sandwich', price:90 },
-    { id:'sn9', name:'Bread Butter', price:55 }, { id:'sn10', name:'French Fries', price:100 }
-  ],
-  salads: [
-    { id:'sl1', name:'Green Salad', price:80 }, { id:'sl2', name:'Russian Salad', price:120 },
-    { id:'sl3', name:'Coleslaw', price:90 }, { id:'sl4', name:'Fruit Salad', price:130 }
-  ],
-  paneer: [
-    { id:'pn1', name:'Emerald Sp. Paneer', price:240 }, { id:'pn2', name:'Paneer Sizzling', price:245 },
-    { id:'pn3', name:'Paneer Kathiyawadi', price:230 }, { id:'pn4', name:'Paneer Darwar', price:230 },
-    { id:'pn5', name:'Paneer Tiranga', price:235 }, { id:'pn6', name:'Cheese Butter Masala', price:235 },
-    { id:'pn7', name:'Cheese Angoori', price:235 }, { id:'pn8', name:'Paneer Mushroom Masala', price:230 },
-    { id:'pn9', name:'Paneer Butter Masala', price:210 }, { id:'pn10', name:'Paneer Tikka Masala', price:220 },
-    { id:'pn11', name:'Paneer Kankani', price:220 }, { id:'pn12', name:'Paneer Diwani Handi', price:220 },
-    { id:'pn13', name:'Paneer Lajawab', price:220 }, { id:'pn14', name:'Paneer Kalimirch', price:220 },
-    { id:'pn15', name:'Paneer Kadai', price:220 }, { id:'pn16', name:'Paneer Handi', price:220 },
-    { id:'pn17', name:'Balti Paneer', price:220 }, { id:'pn18', name:'Tawa Paneer', price:220 },
-    { id:'pn19', name:'Paneer Toofani', price:220 }, { id:'pn20', name:'Paneer Hara Masala', price:220 },
-    { id:'pn21', name:'Paneer Shahi Korma', price:220 }, { id:'pn22', name:'Paneer Bhurjee', price:230 },
-    { id:'pn23', name:'Paneer Pasanda', price:225 }, { id:'pn24', name:'Mutter Paneer', price:200 },
-    { id:'pn25', name:'Palak Paneer', price:200 }, { id:'pn26', name:'Methi Paneer Masala', price:220 },
-    { id:'pn27', name:'Kaju Paneer Masala', price:245 }, { id:'pn28', name:'Khoya Kaju (sweet)', price:240 },
-    { id:'pn29', name:'Kaju Balti Masala / Kaju Curry', price:245 }
-  ],
-  indian_curry: [
-    { id:'in1', name:'Emerald Sp. Veg.', price:210 }, { id:'in2', name:'Veg. Mastani', price:215 },
-    { id:'in3', name:'Veg. Jawalamukhi', price:215 }, { id:'in4', name:'Veg. Sizzling', price:220 },
-    { id:'in5', name:'Veg. Tawa Masala', price:200 }, { id:'in6', name:'Veg. Kadai', price:200 },
-    { id:'in7', name:'Veg. Kolhapuri', price:200 }, { id:'in8', name:'Veg. Makhanwala', price:200 },
-    { id:'in9', name:'Veg. Jaipuri', price:200 }, { id:'in10', name:'Veg. Singapuri', price:200 },
-    { id:'in11', name:'Veg. Handi', price:200 }, { id:'in12', name:'Veg. Jalfrezi', price:200 },
-    { id:'in13', name:'Veg. Shahi Korma', price:200 }, { id:'in14', name:'Veg. Toofani', price:200 },
-    { id:'in15', name:'Veg. Hyderabadi', price:200 }, { id:'in16', name:'Palak Corn Capsicum', price:200 },
-    { id:'in17', name:'Mutter Methi Malai', price:215 }, { id:'in18', name:'Baby Corn Makhanwala', price:215 },
-    { id:'in19', name:'Navaratan Korma', price:215 }, { id:'in20', name:'Corn Tomato Bhartha', price:200 },
-    { id:'in21', name:'Mutter Mushroom', price:215 }, { id:'in22', name:'Mushroom Masala', price:215 },
-    { id:'in23', name:'Mix Vegetable', price:190 }, { id:'in24', name:'Chana Masala', price:190 },
-    { id:'in25', name:'Aloo Masala', price:190 }, { id:'in26', name:'Dum Aloo', price:190 },
-    { id:'in27', name:'Aloo Methi', price:155 }, { id:'in28', name:'Jeera Aloo', price:155 }
-  ],
-  dal: [
-    { id:'dl1', name:'Dal Makhani', price:180 }, { id:'dl2', name:'Dal Fry', price:150 },
-    { id:'dl3', name:'Dal Tadka', price:150 }, { id:'dl4', name:'Dal Bukhara', price:185 },
-    { id:'dl5', name:'Panchmel Dal', price:160 }
-  ],
-  rice_merged: [
-    { id:'ri1', name:'Veg. Biryani', price:200 }, { id:'ri2', name:'Mutter Rice', price:170 },
-    { id:'ri3', name:'Pulao', price:160 }, { id:'ri4', name:'Jeera Rice', price:120 },
-    { id:'ri5', name:'Steamed Rice', price:100 }, { id:'ri6', name:'Mushroom Biryani', price:210 }
-  ],
-  tandoor: [
-    { id:'tn1', name:'Tandoori Roti', price:25 }, { id:'tn2', name:'Butter Tandoori Roti', price:30 },
-    { id:'tn3', name:'Naan', price:35 }, { id:'tn4', name:'Butter Naan', price:40 },
-    { id:'tn5', name:'Garlic Naan', price:50 }, { id:'tn6', name:'Cheese Naan', price:70 },
-    { id:'tn7', name:'Kulcha', price:45 }, { id:'tn8', name:'Paratha', price:50 },
-    { id:'tn9', name:'Laccha Paratha', price:55 }, { id:'tn10', name:'Missi Roti', price:40 }
-  ],
-  kofta: [
-    { id:'kf1', name:'Malai Kofta', price:220 }, { id:'kf2', name:'Dahi Kofta', price:220 },
-    { id:'kf3', name:'Nargisi Kofta', price:230 }, { id:'kf4', name:'Lauki Kofta', price:200 }
-  ],
-  chinese_merged: [
-    { id:'ch1', name:'Veg. Manchurian Dry', price:180 }, { id:'ch2', name:'Veg. Manchurian Gravy', price:190 },
-    { id:'ch3', name:'Chilli Paneer Dry', price:200 }, { id:'ch4', name:'Chilli Paneer Gravy', price:210 },
-    { id:'ch5', name:'Veg. Fried Rice', price:160 }, { id:'ch6', name:'Schezwan Fried Rice', price:175 },
-    { id:'ch7', name:'Veg. Hakka Noodles', price:155 }, { id:'ch8', name:'Schezwan Noodles', price:170 },
-    { id:'ch9', name:'Spring Rolls', price:140 }, { id:'ch10', name:'Veg. Crispy', price:180 }
-  ],
-  soups: [
-    { id:'so1', name:'Tomato Soup', price:100 }, { id:'so2', name:'Sweet Corn Soup', price:110 },
-    { id:'so3', name:'Hot & Sour Soup', price:120 }, { id:'so4', name:'Cream of Mushroom', price:130 },
-    { id:'so5', name:'Minestrone Soup', price:140 }
-  ],
-  sizzlers: [
-    { id:'sz1', name:'Veg. Sizzler', price:320 }, { id:'sz2', name:'Paneer Sizzler', price:350 },
-    { id:'sz3', name:'Mexican Sizzler', price:340 }, { id:'sz4', name:'Continental Sizzler', price:360 }
-  ],
-  continental: [
-    { id:'co1', name:'Pasta Arrabiata', price:200 }, { id:'co2', name:'Pasta Alfredo', price:210 },
-    { id:'co3', name:'Mac & Cheese', price:190 }, { id:'co4', name:'Baked Vegetables', price:230 }
-  ],
-  drinks: [
-    { id:'dr1', name:'Fresh Lime Soda', price:60 }, { id:'dr2', name:'Masala Chaas', price:70 },
-    { id:'dr3', name:'Cold Coffee', price:100 }, { id:'dr4', name:'Hot Tea', price:40 },
-    { id:'dr5', name:'Mineral Water', price:30 }, { id:'dr6', name:'Soft Drink', price:60 }
-  ],
-  shakes: [
-    { id:'sh1', name:'Mango Shake', price:120 }, { id:'sh2', name:'Strawberry Shake', price:130 },
-    { id:'sh3', name:'Chocolate Shake', price:140 }, { id:'sh4', name:'Vanilla Shake', price:120 },
-    { id:'sh5', name:'Oreo Shake', price:150 }
-  ],
-  ice_cream: [
-    { id:'ic1', name:'Vanilla Ice Cream', price:100 }, { id:'ic2', name:'Chocolate Ice Cream', price:110 },
-    { id:'ic3', name:'Gulab Jamun', price:90 }, { id:'ic4', name:'Rasmalai', price:120 },
-    { id:'ic5', name:'Gajar Halwa', price:100 }
-  ]
-};
+/* ====================================================
+   FULL MENU DATA — matches menu.html exactly
+   ==================================================== */
+const allMenuItems = [
+  {id:'st1',name:'Corn Tikki',price:200},{id:'st2',name:'Paneer Tikka Dry',price:235},
+  {id:'st3',name:'Paneer Phudina Tikka',price:235},{id:'st4',name:'Paneer Lahsuni Tikka',price:235},
+  {id:'st5',name:'Hara Bhara Kabab',price:200},{id:'st6',name:'Raja Kabab',price:210},
+  {id:'st7',name:'Veg. Sheekh Kabab',price:230},{id:'st8',name:'Paneer Sheekh Kabab',price:260},
+  {id:'st9',name:'Veg. Brice Kabab',price:200},{id:'st10',name:'Veg. Dilruba Sheekh Kabab',price:260},
+  {id:'st11',name:'Dahi Kabab',price:190},{id:'st12',name:'Jahangiri Tikka',price:230},
+  {id:'st13',name:'Tandoori Plater',price:285},
+  {id:'sn1',name:'Veg. Pizza',price:135},{id:'sn2',name:'Italian Pizza',price:135},
+  {id:'sn3',name:'Cheese Pizza',price:150},{id:'sn4',name:'Jain Pizza',price:120},
+  {id:'sn5',name:'Veg. Club Sandwich',price:90},{id:'sn6',name:'Veg. Sandwich',price:80},
+  {id:'sn7',name:'Cheese Sandwich',price:80},{id:'sn8',name:'Cheese Jam Sandwich',price:90},
+  {id:'sn9',name:'Bread Butter',price:55},{id:'sn10',name:'French Fries',price:100},
+  {id:'pn1',name:'Emerald Sp. Paneer',price:240},{id:'pn2',name:'Paneer Sizzling',price:245},
+  {id:'pn3',name:'Paneer Kathiyawadi',price:230},{id:'pn4',name:'Paneer Darwar',price:230},
+  {id:'pn5',name:'Paneer Tiranga',price:235},{id:'pn6',name:'Cheese Butter Masala',price:235},
+  {id:'pn7',name:'Cheese Angoori',price:235},{id:'pn8',name:'Paneer Mushroom Masala',price:230},
+  {id:'pn9',name:'Paneer Butter Masala',price:210},{id:'pn10',name:'Paneer Tikka Masala',price:220},
+  {id:'pn11',name:'Paneer Kankani',price:220},{id:'pn12',name:'Paneer Diwani Handi',price:220},
+  {id:'pn13',name:'Paneer Lajawab',price:220},{id:'pn14',name:'Paneer Kalimirch',price:220},
+  {id:'pn15',name:'Paneer Kadai',price:220},{id:'pn16',name:'Paneer Handi',price:220},
+  {id:'pn17',name:'Balti Paneer',price:220},{id:'pn18',name:'Tawa Paneer',price:220},
+  {id:'pn19',name:'Paneer Toofani',price:220},{id:'pn20',name:'Paneer Hara Masala',price:220},
+  {id:'pn21',name:'Paneer Shahi Korma',price:220},{id:'pn22',name:'Paneer Bhurjee',price:230},
+  {id:'pn23',name:'Paneer Pasanda',price:225},{id:'pn24',name:'Mutter Paneer',price:200},
+  {id:'pn25',name:'Palak Paneer',price:200},{id:'pn26',name:'Methi Paneer Masala',price:220},
+  {id:'pn27',name:'Kaju Paneer Masala',price:245},{id:'pn28',name:'Khoya Kaju (sweet)',price:240},
+  {id:'pn29',name:'Kaju Balti Masala / Kaju Curry',price:245},
+  {id:'in1',name:'Emerald Sp. Veg.',price:210},{id:'in2',name:'Veg. Mastani',price:215},
+  {id:'in3',name:'Veg. Jawalamukhi',price:215},{id:'in4',name:'Veg. Sizzling',price:220},
+  {id:'in5',name:'Veg. Tawa Masala',price:200},{id:'in6',name:'Veg. Kadai',price:200},
+  {id:'in7',name:'Veg. Kolhapuri',price:200},{id:'in8',name:'Veg. Makhanwala',price:200},
+  {id:'in9',name:'Veg. Jaipuri',price:200},{id:'in10',name:'Veg. Singapuri',price:200},
+  {id:'in11',name:'Veg. Handi',price:200},{id:'in12',name:'Veg. Jalfrezi',price:200},
+  {id:'in13',name:'Veg. Shahi Korma',price:200},{id:'in14',name:'Veg. Toofani',price:200},
+  {id:'in15',name:'Veg. Hyderabadi',price:200},{id:'in16',name:'Palak Corn Capsicum',price:200},
+  {id:'in17',name:'Mutter Methi Malai',price:215},{id:'in18',name:'Baby Corn Makhanwala',price:215},
+  {id:'in19',name:'Navaratan Korma',price:215},{id:'in20',name:'Corn Tomato Bhartha',price:200},
+  {id:'in21',name:'Mutter Mushroom',price:215},{id:'in22',name:'Mushroom Masala',price:215},
+  {id:'in23',name:'Mix Vegetable',price:190},{id:'in24',name:'Chana Masala',price:190},
+  {id:'in25',name:'Aloo Masala',price:190},{id:'in26',name:'Dum Aloo',price:190},
+  {id:'in27',name:'Aloo Methi',price:155},{id:'in28',name:'Jeera Aloo',price:155},
+  {id:'da1',name:'Dal Fry',price:115},{id:'da2',name:'Dal Fry Butter',price:120},
+  {id:'da3',name:'Dal Fry Tadka',price:140},{id:'da4',name:'Dal Palak',price:145},
+  {id:'ba1',name:'Emerald Sp. Biryani',price:199},{id:'ba2',name:'Veg. Biryani',price:150},
+  {id:'ba3',name:'Hyderabadi Biryani',price:165},{id:'ba4',name:'Handi Biryani',price:165},
+  {id:'ba5',name:'Veg. Pulav',price:130},{id:'ba6',name:'Peas Pulav',price:130},
+  {id:'ba7',name:'Kashmiri Pulav',price:170},{id:'ba8',name:'Jeera Rice',price:125},
+  {id:'ba9',name:'Steamed Rice',price:95},{id:'ba10',name:'Mint Rice',price:190},
+  {id:'ba11',name:'Corn Rice',price:190},
+  {id:'ri1',name:'Mushroom Fry Rice',price:195},{id:'ri2',name:'Chinese Bhel',price:190},
+  {id:'ri3',name:'American Chopsuey',price:190},{id:'ri4',name:'Veg. Triple Fried Rice',price:210},
+  {id:'ri5',name:'Veg. Fried Rice',price:185},{id:'ri6',name:'Schezwan Fried Rice',price:185},
+  {id:'ko1',name:'Cheese Kofta',price:225},{id:'ko2',name:'Malai Kofta',price:220},
+  {id:'ko3',name:'Veg. Kofta',price:200},{id:'ko4',name:'Paneer Kofta',price:215},
+  {id:'ko5',name:'Kashmiri Kofta',price:215},{id:'ko6',name:'Nargisi Kofta',price:205},
+  {id:'ko7',name:'Kadai Kofta',price:210},{id:'ko8',name:'Kaju Kofta',price:225},
+  {id:'ta1',name:'Roti - Plain',price:25},{id:'ta2',name:'Roti - Butter',price:28},
+  {id:'ta3',name:'Paratha',price:40},{id:'ta4',name:'Paratha Butter',price:55},
+  {id:'ta5',name:'Lachha Paratha',price:60},{id:'ta6',name:'Paratha Stuffed',price:65},
+  {id:'ta7',name:'Paratha Phudina',price:65},{id:'ta8',name:'Paneer Paratha',price:99},
+  {id:'ta9',name:'Paneer Cheese Paratha',price:110},{id:'ta10',name:'Naan',price:50},
+  {id:'ta11',name:'Naan Butter',price:55},{id:'ta12',name:'Naan Stuffed',price:80},
+  {id:'ta13',name:'Naan Kashmiri',price:90},{id:'ta14',name:'Naan Garlic',price:90},
+  {id:'ta15',name:'Naan Cheese',price:99},{id:'ta16',name:'Hariyali Naan',price:99},
+  {id:'ta17',name:'Naan Cheese Garlic',price:105},{id:'ta18',name:'Family Naan',price:125},
+  {id:'ta19',name:'Kulcha',price:45},{id:'ta20',name:'Kulcha Butter',price:55},
+  {id:'ta21',name:'Kulcha Stuffed',price:70},{id:'ta22',name:'Onion Kulcha',price:70},
+  {id:'ta23',name:'Missi Roti',price:32},
+  {id:'cs1',name:'Oriental Crispy Vegetables',price:200},{id:'cs2',name:'Baby Corn Chilli Fried',price:200},
+  {id:'cs3',name:'Schezwan Paneer',price:225},{id:'cs4',name:'Paneer Chilly (Dry / Gravy)',price:225},
+  {id:'cs5',name:'Paneer Manchurian (Dry / Gravy)',price:220},{id:'cs6',name:'Paneer 65',price:225},
+  {id:'cs7',name:'Veg. Manchurian (Dry / Gravy)',price:200},{id:'cs8',name:'Veg. Spring Roll',price:210},
+  {id:'cs9',name:'Veg. Lollipop',price:220},{id:'cs10',name:'Mushroom Chilly Fry',price:225},
+  {id:'no1',name:'Veg. Chow Mein',price:180},{id:'no2',name:'Veg. Hakka Noodles',price:190},
+  {id:'no3',name:'Schezwan Noodles',price:190},{id:'no4',name:'Chilly Garlic Noodles',price:190},
+  {id:'no5',name:'Veg. Manchurian With Noodles',price:190},
+  {id:'sp1',name:'Cream of Tomato',price:100},{id:'sp2',name:'Minestrone Soup',price:115},
+  {id:'sp3',name:'Sweet Corn Veg. Soup',price:100},{id:'sp4',name:'Veg. Hot & Sour Soup',price:115},
+  {id:'sp5',name:'Veg. Manchow Soup',price:115},{id:'sp6',name:'Lemon Coriander Soup',price:115},
+  {id:'sp7',name:'Palak Phudina Soup',price:115},{id:'sp8',name:'Veg. Mushroom Soup',price:120},
+  {id:'sp9',name:'Clear Soup (Veg / Noodles)',price:100},{id:'sp10',name:'Cheese Corn Tomato Soup',price:120},
+  {id:'sl1',name:'Cream of Fruit Salad',price:125},{id:'sl2',name:'Fresh Green Salad',price:80},
+  {id:'sl3',name:'Russian Salad',price:125},{id:'sl4',name:'Kachumber Salad',price:70},
+  {id:'sl5',name:'Pineapple Raita',price:95},{id:'sl6',name:'Veg. Raita',price:85},
+  {id:'sl7',name:'Cucumber Raita',price:85},{id:'sl8',name:'Boondi Raita',price:85},
+  {id:'sl9',name:'Curd',price:65},{id:'sl10',name:'Papad Roasted',price:25},
+  {id:'sl11',name:'Papad Fried',price:27},{id:'sl12',name:'Papad Masala',price:45},
+  {id:'sl13',name:'Papad Cheese Masala',price:60},
+  {id:'sz1',name:'Mix Grilled Sizzler',price:330},{id:'sz2',name:'Chinese Sizzler',price:340},
+  {id:'sz3',name:'Paneer Shaslik',price:340},{id:'sz4',name:'Paneer Stick',price:340},
+  {id:'con1',name:'Baked Macaroni with Pineapple',price:205},
+  {id:'con2',name:'Baked Spaghetti with Pineapple',price:205},
+  {id:'con3',name:'Baked Vegetable with Pineapple',price:205},
+  {id:'dr1',name:'Jal Jeera Water',price:40},{id:'dr2',name:'Fresh Lime Soda',price:40},
+  {id:'dr3',name:'Fresh Lime Water (Sweet / Salted)',price:40},{id:'dr4',name:'Soft Drinks (MRP)',price:20},
+  {id:'dr5',name:'Lassi (Sweet / Salted)',price:80},{id:'dr6',name:'Special Lassi',price:100},
+  {id:'dr7',name:'Mineral Water (MRP)',price:20},{id:'dr8',name:'Fruit Punch',price:70},
+  {id:'dr9',name:'Butter Milk',price:30},{id:'dr10',name:'Masala Butter Milk',price:35},
+  {id:'sh1',name:'Vanilla Milk Shake',price:99},{id:'sh1ic',name:'Vanilla Milk Shake (with Ice Cream)',price:110},
+  {id:'sh2',name:'Strawberry Milk Shake',price:99},{id:'sh2ic',name:'Strawberry Milk Shake (with Ice Cream)',price:110},
+  {id:'sh3',name:'Chocolate Milk Shake',price:99},{id:'sh3ic',name:'Chocolate Milk Shake (with Ice Cream)',price:115},
+  {id:'sh4',name:'Kesar Pista Milk Shake',price:110},{id:'sh4ic',name:'Kesar Pista Milk Shake (with Ice Cream)',price:120},
+  {id:'sh5',name:'Kaju Draksh Milk Shake',price:110},{id:'sh5ic',name:'Kaju Draksh Milk Shake (with Ice Cream)',price:120},
+  {id:'sh6',name:'Mango Milk Shake',price:110},{id:'sh6ic',name:'Mango Milk Shake (with Ice Cream)',price:120},
+  {id:'sh7',name:'Cold Coffee',price:99},{id:'sh7ic',name:'Cold Coffee (with Ice Cream)',price:115},
+  {id:'ic1',name:'Gulab Jamun',price:50},{id:'ic2',name:'Rajbhog',price:99},
+  {id:'ic3',name:'Vanilla Ice Cream',price:80},{id:'ic4',name:'Strawberry Ice Cream',price:80},
+  {id:'ic5',name:'Cheery Berry Ice Cream',price:80},{id:'ic6',name:'Mango Ice Cream',price:80},
+  {id:'ic7',name:'Kesar Pista Ice Cream',price:90},{id:'ic8',name:'Kaju Draksh Ice Cream',price:90},
+  {id:'ic9',name:'Butter Scotch Ice Cream',price:90},{id:'ic10',name:'Chocolate Ice Cream',price:90},
+  {id:'ic11',name:'Fruit Salad with Ice Cream',price:140},{id:'ic12',name:'American Nut',price:99}
+];
 
-// Flatten all menu items for search
-const allMenuItems = Object.values(menuData).flat();
-
-/* ======================================================
-   MANAGER STATE
-   ====================================================== */
-let allTables  = [];
+/* ====================================================
+   STATE
+   ==================================================== */
+let allOrders  = [];   // raw from Firebase — always fresh from listener
 let allQueue   = [];
-let allOrders  = [];
+let historyData    = [];
+let filteredHistory = [];
+let histPage = 1;
+const HIST_PAGE_SIZE = 20;
 
-/* ── Build virtual table occupancy from active orders ──
-   An order is "active" if status is Preparing or Ready (not Completed/Cancelled) */
-function rebuildTablesFromOrders() {
-  const base = [];
-  for (let i = 1; i <= 23; i++) {
-    base.push({ number: i, capacity: 4, occupied: false, current: null, orderId: null });
-  }
+let currentBillTableNumber  = null;
+let currentBillAllOrderIds  = [];
+let billItems   = [];
+let discountMode = 'pct';
 
-  // Group active orders by table — use earliest order for "since", merge items
-  const tableActiveMap = {};
-  allOrders.forEach(order => {
-    if (order.tableNumber === undefined || order.tableNumber === null) return;
-    if (order.status === 'Completed' || order.status === 'Cancelled') return;
-    const tNum = parseInt(order.tableNumber) || 0;
-    if (tNum < 1) return;
-    if (!tableActiveMap[tNum]) {
-      tableActiveMap[tNum] = { firstOrder: order, allOrders: [], allItems: [] };
-    }
-    tableActiveMap[tNum].allOrders.push(order);
-    if (Array.isArray(order.items)) {
-      tableActiveMap[tNum].allItems.push(...order.items);
-    }
-    // Keep earliest order as first
-    const existing = tableActiveMap[tNum].firstOrder;
-    const existingTime = existing.createdAt ? new Date(existing.createdAt).getTime() : Infinity;
-    const thisTime = order.createdAt ? new Date(order.createdAt).getTime() : Infinity;
-    if (thisTime < existingTime) tableActiveMap[tNum].firstOrder = order;
+/* ====================================================
+   FIREBASE REAL-TIME LISTENER
+   ==================================================== */
+db.ref('orders').on('value', snapshot => {
+  const dot  = document.getElementById('conn-dot');
+  const txt  = document.getElementById('conn-text');
+  if (dot) dot.style.background = '#22c55e';
+  if (txt)  txt.textContent = 'Live';
+
+  const data = snapshot.val();
+  allOrders = data && typeof data === 'object'
+    ? Object.values(data).filter(o => o && o.id)
+    : [];
+
+  renderManagerDashboard();
+}, err => {
+  const dot = document.getElementById('conn-dot');
+  const txt = document.getElementById('conn-text');
+  if (dot) dot.style.background = '#ef4444';
+  if (txt)  txt.textContent = 'Firebase error: ' + err.message;
+  document.getElementById('tables').innerHTML =
+    `<div class="empty-state"><div class="empty-state-icon">❌</div><div>Firebase error: ${err.message}</div></div>`;
+});
+
+db.ref('queue').on('value', snapshot => {
+  const data = snapshot.val();
+  allQueue = data && typeof data === 'object'
+    ? Object.values(data).filter(q => q && typeof q === 'object')
+    : [];
+  renderManagerDashboard();
+});
+
+/* ====================================================
+   BUILD TABLE MAP FROM allOrders (no stale local copy)
+   ==================================================== */
+function buildTableMap() {
+  // Tables 1-23 base
+  const base = {};
+  for (let i = 1; i <= 23; i++) base[i] = { number: i, capacity: 4, occupied: false, current: null };
+
+  // Only active (non-completed, non-cancelled) orders
+  const active = allOrders.filter(o =>
+    o.status !== 'Completed' && o.status !== 'Cancelled' &&
+    o.tableNumber !== undefined && o.tableNumber !== null
+  );
+
+  // Group by table number (force to int for safety)
+  const groupedByTable = {};
+  active.forEach(o => {
+    const t = parseInt(o.tableNumber);
+    if (!t || isNaN(t)) return;
+    if (!groupedByTable[t]) groupedByTable[t] = [];
+    groupedByTable[t].push(o);
   });
 
-  Object.entries(tableActiveMap).forEach(([tNum, tableData]) => {
-    const idx = parseInt(tNum) - 1;
-    if (idx < 0 || idx >= base.length) return;
-    const first = tableData.firstOrder;
-    const anyPreparing = tableData.allOrders.some(o => o.status === "Preparing");
-    base[idx].occupied = true;
-    base[idx].orderId  = first.id;
-    base[idx].current  = {
-      name:    first.customerName || ("Table " + tNum),
-      people:  first.people || 1,
+  Object.entries(groupedByTable).forEach(([tStr, orders]) => {
+    const t = parseInt(tStr);
+    if (!base[t]) base[t] = { number: t, capacity: 4, occupied: false, current: null };
+
+    orders.sort((a, b) => {
+      return (a.createdAt ? new Date(a.createdAt).getTime() : 0) -
+             (b.createdAt ? new Date(b.createdAt).getTime() : 0);
+    });
+
+    const first = orders[0];
+    const anyPreparing = orders.some(o => o.status === 'Preparing');
+    const allItems = orders.flatMap(o => Array.isArray(o.items) ? o.items : []);
+
+    base[t].occupied = true;
+    base[t].current  = {
+      name:    first.customerName || ('Table ' + t),
       since:   first.createdAt ? new Date(first.createdAt).getTime() : Date.now(),
-      orderId: first.id,
-      status:  anyPreparing ? "Preparing" : "Ready",
-      diet:    first.diet || "Regular",
-      items:   tableData.allItems,
-      rounds:  tableData.allOrders.length
+      status:  anyPreparing ? 'Preparing' : 'Ready',
+      diet:    first.diet || 'Regular',
+      items:   allItems,
+      rounds:  orders.length,
+      orderId: first.id
     };
   });
 
-  allTables = base;
+  return base;
 }
 
-// Bill modal state
-let currentBillOrderId = null;
-let currentBillTableNumber = null;
-let currentBillTableKey = null;
-let billItems = [];       // [{id, name, qty, price}]
-let discountMode = 'pct'; // 'pct' | 'rs'
-
-/* initializeTables removed — manager derives state from orders node only */
-
-/* ======================================================
-   RENDER MANAGER DASHBOARD
-   ====================================================== */
+/* ====================================================
+   RENDER DASHBOARD
+   ==================================================== */
 function renderManagerDashboard() {
-  const tablesDiv = document.getElementById("tables");
-  const queueDiv = document.getElementById("queue");
-  tablesDiv.innerHTML = "";
-  queueDiv.innerHTML = "";
+  const tableMap  = buildTableMap();
+  const tablesDiv = document.getElementById('tables');
+  const queueDiv  = document.getElementById('queue');
+  if (!tablesDiv) return;
 
-  if (allTables.length === 0) {
-    tablesDiv.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🪑</div><div>No tables configured</div></div>`;
-    return;
-  }
+  tablesDiv.innerHTML = '';
+  queueDiv.innerHTML  = '';
 
-  allTables.forEach(t => {
+  Object.values(tableMap).sort((a, b) => a.number - b.number).forEach(t => {
     const occupiedClass = t.occupied ? 'occupied' : '';
-    const statusClass = t.occupied ? 'occupied' : 'free';
-    const statusText = t.occupied ? 'Occupied' : 'Free';
+    const statusClass   = t.occupied ? 'occupied' : 'free';
+    const statusText    = t.occupied ? 'Occupied' : 'Free';
+
     let customerHTML = '';
     if (t.current) {
       const minutesSince = Math.floor((Date.now() - t.current.since) / 60000);
-      const statusColor  = t.current.status === "Ready" ? "#22c55e" : "#f59e0b";
-      const statusLabel  = t.current.status || "Preparing";
-      const itemCount    = Array.isArray(t.current.items) ? t.current.items.length : 0;
+      const statusColor  = t.current.status === 'Ready' ? '#22c55e' : '#f59e0b';
+      const itemCount    = t.current.items.length;
       customerHTML = `
         <div class="customer-details">
           <div class="customer-name">Table ${t.number}</div>
           <div class="customer-meta">
-            <span>🍽️ ${itemCount} item${itemCount !== 1 ? "s" : ""}</span>
+            <span>🍽️ ${itemCount} item${itemCount !== 1 ? 's' : ''}</span>
             <span>⏱️ ${minutesSince} min</span>
-            <span style="color:${statusColor};font-weight:700;">● ${statusLabel}</span>
+            <span style="color:${statusColor};font-weight:700;">● ${t.current.status}</span>
             ${t.current.rounds > 1 ? `<span style="color:#60a5fa;font-weight:700;">🔄 ${t.current.rounds} rounds</span>` : ''}
           </div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:6px;">
-            Diet: ${t.current.diet || "Regular"}
-          </div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:6px;">Diet: ${t.current.diet}</div>
         </div>
         <div class="btn-row">
           <button onclick="openBillModal(${t.number})" class="bill-btn">🧾 Bill</button>
@@ -858,6 +635,7 @@ function renderManagerDashboard() {
         </div>
       `;
     }
+
     tablesDiv.innerHTML += `
       <div class="table-card ${occupiedClass}">
         <div class="table-header">
@@ -865,10 +643,7 @@ function renderManagerDashboard() {
           <div class="status-badge ${statusClass}">${statusText}</div>
         </div>
         <div class="table-info">
-          <div class="info-row">
-            <span class="info-label">Capacity</span>
-            <span class="info-value">${t.capacity} ${t.capacity === 1 ? 'Person' : 'People'}</span>
-          </div>
+          <div class="info-row"><span class="info-label">Capacity</span><span class="info-value">${t.capacity} People</span></div>
         </div>
         ${customerHTML}
       </div>
@@ -880,85 +655,94 @@ function renderManagerDashboard() {
     queueDiv.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📋</div><div>No customers waiting</div></div>`;
   } else {
     allQueue.forEach(q => {
-      const waitingMinutes = Math.floor((Date.now() - (q.time || Date.now())) / 60000);
+      const wait = Math.floor((Date.now() - (q.time || Date.now())) / 60000);
       queueDiv.innerHTML += `
         <div class="queue-card">
           <div class="queue-info">
             <div class="queue-name">${q.name || 'Customer'}</div>
-            <div class="queue-meta">
-              <span>👥 ${q.people} ${q.people === 1 ? 'Person' : 'People'}</span>
-              <span>⏱️ Waiting ${waitingMinutes} min</span>
-            </div>
+            <div class="queue-meta"><span>👥 ${q.people || 1}</span><span>⏱️ ${wait} min</span></div>
           </div>
-        </div>
-      `;
+        </div>`;
     });
   }
 }
 
-/* ======================================================
-   FREE TABLE
-   ====================================================== */
+/* ====================================================
+   FREE TABLE — always reads fresh from Firebase
+   ==================================================== */
 function freeTable(tableNumber) {
-  if (!confirm('Clear Table ' + tableNumber + '? This will mark all active orders as Completed.')) return;
-  db.ref('orders').once('value', (snap) => {
+  if (!confirm(`Clear Table ${tableNumber}? This marks all active orders as Completed.`)) return;
+
+  // Always pull fresh data directly from Firebase, never use stale allOrders
+  db.ref('orders').orderByChild('tableNumber').equalTo(tableNumber).once('value', snap => {
     const data = snap.val();
-    if (!data || typeof data !== 'object') return;
+    if (!data) {
+      // Fallback: try string comparison
+      db.ref('orders').orderByChild('tableNumber').equalTo(String(tableNumber)).once('value', snap2 => {
+        processOrders(snap2.val());
+      });
+      return;
+    }
+    processOrders(data);
+  });
+
+  function processOrders(data) {
+    if (!data) { alert('No orders found for this table.'); return; }
+    const billedAt = new Date().toISOString();
+    let count = 0;
     Object.values(data).forEach(order => {
       if (!order || !order.id) return;
-      // Use == (not ===) to handle string vs number mismatch
-      if (order.tableNumber == tableNumber &&
-          order.status !== 'Completed' &&
-          order.status !== 'Cancelled') {
-        db.ref('orders/' + order.id).update({
-          status: 'Completed',
-          billedAt: new Date().toISOString()
-        }).catch(e => console.error('freeTable error:', e));
-      }
+      // Double-check table number (string or number)
+      const oTable = parseInt(order.tableNumber);
+      if (oTable !== parseInt(tableNumber)) return;
+      if (order.status === 'Completed' || order.status === 'Cancelled') return;
+      db.ref('orders/' + order.id).update({ status: 'Completed', billedAt });
+      count++;
     });
-  });
+    if (count === 0) {
+      // Last resort: scan all orders
+      allOrders.forEach(order => {
+        if (parseInt(order.tableNumber) === parseInt(tableNumber) &&
+            order.status !== 'Completed' && order.status !== 'Cancelled') {
+          db.ref('orders/' + order.id).update({ status: 'Completed', billedAt });
+          count++;
+        }
+      });
+    }
+  }
 }
 
-/* ======================================================
-   BILL MODAL — OPEN
-   ====================================================== */
-// Tracks all order IDs that belong to current bill (all rounds)
-let currentBillAllOrderIds = [];
-
+/* ====================================================
+   BILL MODAL
+   ==================================================== */
 function openBillModal(tableNumber) {
   currentBillTableNumber = tableNumber;
-  billItems = [];
   currentBillAllOrderIds = [];
+  billItems = [];
+
   document.getElementById('discountInput').value = '';
   document.getElementById('menuSearchInput').value = '';
   document.getElementById('menuResults').style.display = 'none';
   setDiscountMode('pct');
-
-  const table = allTables.find(t => t.number === tableNumber);
-  currentBillTableKey = tableNumber - 1;
-
-  const diet = (table && table.current) ? (table.current.diet || 'Regular') : 'Regular';
-  document.getElementById('billModalSubtitle').textContent = 'Table ' + tableNumber + '  |  Diet: ' + diet;
-
-  // Show loading state
-  document.getElementById('billItemsBody').innerHTML = '<tr><td colspan="5" class="empty-bill-msg">Loading items...</td></tr>';
+  document.getElementById('billItemsBody').innerHTML =
+    '<tr><td colspan="5" class="empty-bill-msg">Loading items...</td></tr>';
   document.getElementById('billModal').classList.add('active');
+  document.getElementById('billModalSubtitle').textContent =
+    `Table ${tableNumber}  |  Loading...`;
 
-  // Pull fresh data directly from Firebase
-  db.ref('orders').once('value', (snap) => {
+  // ── Pull ALL orders for this table directly from Firebase ──
+  // Use value listener and filter client-side to handle string/int mismatch
+  db.ref('orders').once('value', snap => {
     const data = snap.val();
+    if (!data) { renderBillItems(); recalcBill(); return; }
 
-    if (!data || typeof data !== 'object') {
-      billItems = [];
-      renderBillItems();
-      recalcBill();
-      return;
-    }
-
-    // Get all active orders for this table, sorted oldest first
     const tableOrders = Object.values(data)
-      .filter(o => o && o.tableNumber == tableNumber &&
-                   o.status !== 'Completed' && o.status !== 'Cancelled')
+      .filter(o => {
+        if (!o || !o.id) return false;
+        if (parseInt(o.tableNumber) !== parseInt(tableNumber)) return false;
+        if (o.status === 'Completed' || o.status === 'Cancelled') return false;
+        return true;
+      })
       .sort((a, b) => {
         const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -966,22 +750,25 @@ function openBillModal(tableNumber) {
       });
 
     currentBillAllOrderIds = tableOrders.map(o => o.id).filter(Boolean);
-    currentBillOrderId = currentBillAllOrderIds.length > 0 ? currentBillAllOrderIds[0] : null;
 
-    // Merge items across all rounds (same item name+price → add qty)
+    const first = tableOrders[0];
+    const diet = first ? (first.diet || 'Regular') : 'Regular';
+    document.getElementById('billModalSubtitle').textContent =
+      `Table ${tableNumber}  |  Diet: ${diet}  |  ${tableOrders.length} round(s)`;
+
+    // Merge items: same name+price → combine qty
     const mergedMap = {};
     tableOrders.forEach(order => {
-      const items = Array.isArray(order.items) ? order.items : [];
-      items.forEach(i => {
+      (Array.isArray(order.items) ? order.items : []).forEach(i => {
         if (!i || !i.name) return;
-        const key = (i.name + '__' + i.price).toLowerCase();
+        const key = (i.name + '__' + parseFloat(i.price || 0)).toLowerCase();
         if (mergedMap[key]) {
-          mergedMap[key].qty += (i.qty || 1);
+          mergedMap[key].qty += (parseInt(i.qty) || 1);
         } else {
           mergedMap[key] = {
-            id:    i.id || ('item_' + Date.now() + Math.random()),
+            id:    i.id || ('custom_' + Date.now() + Math.random()),
             name:  i.name,
-            qty:   i.qty  || 1,
+            qty:   parseInt(i.qty) || 1,
             price: parseFloat(i.price) || 0
           };
         }
@@ -991,93 +778,86 @@ function openBillModal(tableNumber) {
     billItems = Object.values(mergedMap);
     renderBillItems();
     recalcBill();
-  }, (err) => {
-    console.error('openBillModal Firebase error:', err);
+  }, err => {
     document.getElementById('billItemsBody').innerHTML =
-      '<tr><td colspan="5" class="empty-bill-msg" style="color:#ef4444;">Error loading items: ' + err.message + '</td></tr>';
+      `<tr><td colspan="5" class="empty-bill-msg" style="color:#ef4444;">Error: ${err.message}</td></tr>`;
   });
 }
 
 function closeBillModal() {
   document.getElementById('billModal').classList.remove('active');
-  currentBillOrderId = null;
-  currentBillTableKey = null;
-  currentBillTableNumber = null;
+  currentBillTableNumber  = null;
+  currentBillAllOrderIds  = [];
   billItems = [];
 }
 
-/* ======================================================
-   BILL ITEMS RENDER
-   ====================================================== */
+/* ====================================================
+   BILL ITEMS RENDER & EDIT
+   ==================================================== */
 function renderBillItems() {
   const tbody = document.getElementById('billItemsBody');
-  if (billItems.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="empty-bill-msg">No items yet. Add from menu above or order data is empty.</td></tr>`;
+  if (!billItems.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-bill-msg">No items yet. Search menu above to add.</td></tr>';
     return;
   }
   tbody.innerHTML = billItems.map((item, idx) => `
     <tr>
-      <td><input class="item-name-editable" value="${item.name}" onchange="updateItemName(${idx}, this.value)"></td>
+      <td><input class="item-name-editable" value="${item.name.replace(/"/g,'&quot;')}" onchange="updateItemName(${idx},this.value)"></td>
       <td>
         <div class="qty-cell">
-          <button class="qty-btn" onclick="updateBillQty(${idx}, -1)">−</button>
+          <button class="qty-btn" onclick="updateBillQty(${idx},-1)">−</button>
           <span class="qty-val">${item.qty}</span>
-          <button class="qty-btn" onclick="updateBillQty(${idx}, 1)">+</button>
+          <button class="qty-btn" onclick="updateBillQty(${idx},1)">+</button>
         </div>
       </td>
-      <td><input class="price-editable" type="number" value="${item.price.toFixed(2)}" onchange="updateItemPrice(${idx}, this.value)"></td>
+      <td><input class="price-editable" type="number" value="${item.price.toFixed(2)}" onchange="updateItemPrice(${idx},this.value)"></td>
       <td>₹${(item.price * item.qty).toFixed(2)}</td>
       <td><button class="remove-item-btn" onclick="removeBillItem(${idx})" title="Remove">✕</button></td>
     </tr>
   `).join('');
 }
 
-function updateItemName(idx, val) { billItems[idx].name = val; }
+function updateItemName(idx, val)  { billItems[idx].name = val; }
 function updateItemPrice(idx, val) { billItems[idx].price = parseFloat(val) || 0; renderBillItems(); recalcBill(); }
-function updateBillQty(idx, delta) {
-  billItems[idx].qty = Math.max(1, billItems[idx].qty + delta);
-  renderBillItems(); recalcBill();
-}
-function removeBillItem(idx) { billItems.splice(idx, 1); renderBillItems(); recalcBill(); }
+function updateBillQty(idx, delta) { billItems[idx].qty = Math.max(1, billItems[idx].qty + delta); renderBillItems(); recalcBill(); }
+function removeBillItem(idx)       { billItems.splice(idx, 1); renderBillItems(); recalcBill(); }
 
-/* ======================================================
-   ADD FROM MENU SEARCH
-   ====================================================== */
+/* ====================================================
+   MENU SEARCH IN BILL MODAL
+   ==================================================== */
 function searchMenuItems() {
-  const query = document.getElementById('menuSearchInput').value.toLowerCase().trim();
-  const resultsDiv = document.getElementById('menuResults');
-  if (!query) { resultsDiv.style.display = 'none'; return; }
-  const filtered = allMenuItems.filter(i => i.name.toLowerCase().includes(query)).slice(0, 10);
-  if (filtered.length === 0) { resultsDiv.style.display = 'none'; return; }
-  resultsDiv.style.display = 'block';
-  resultsDiv.innerHTML = filtered.map(i => `
-    <div class="menu-result-item" onclick="addMenuItemToBill('${i.id}', '${i.name.replace(/'/g, "\\'")}', ${i.price})">
-      <span class="menu-result-name">${i.name}</span>
-      <span class="menu-result-price">₹${i.price.toFixed(2)}</span>
-    </div>
-  `).join('');
+  const q = document.getElementById('menuSearchInput').value.toLowerCase().trim();
+  const div = document.getElementById('menuResults');
+  if (!q) { div.style.display = 'none'; return; }
+  const hits = allMenuItems.filter(i => i.name.toLowerCase().includes(q)).slice(0, 12);
+  if (!hits.length) { div.style.display = 'none'; return; }
+  div.style.display = 'block';
+  div.innerHTML = hits.map(i =>
+    `<div class="menu-result-item" onclick="addMenuItemToBill('${i.id}','${i.name.replace(/'/g,"\\'")}',${i.price})">
+       <span class="menu-result-name">${i.name}</span>
+       <span class="menu-result-price">₹${i.price.toFixed(2)}</span>
+     </div>`
+  ).join('');
 }
 
 function addMenuItemToBill(id, name, price) {
   const existing = billItems.find(i => i.id === id);
-  if (existing) { existing.qty += 1; }
-  else { billItems.push({ id, name, qty: 1, price }); }
+  if (existing) existing.qty += 1;
+  else billItems.push({ id, name, qty: 1, price: parseFloat(price) });
   document.getElementById('menuSearchInput').value = '';
   document.getElementById('menuResults').style.display = 'none';
   renderBillItems();
   recalcBill();
 }
 
-// Close search results when clicking outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.add-items-section')) {
+document.addEventListener('click', e => {
+  if (!e.target.closest('.add-items-section'))
     document.getElementById('menuResults').style.display = 'none';
-  }
 });
 
-/* ======================================================
+/* ====================================================
    DISCOUNT & RECALC
-   ====================================================== */
+   ==================================================== */
 function setDiscountMode(mode) {
   discountMode = mode;
   document.getElementById('discPctBtn').classList.toggle('active', mode === 'pct');
@@ -1086,76 +866,66 @@ function setDiscountMode(mode) {
 }
 
 function recalcBill() {
-  const subtotal = billItems.reduce((s, i) => s + (i.price * i.qty), 0);
-  const discVal = parseFloat(document.getElementById('discountInput').value) || 0;
-  let discountAmt = 0;
-  if (discountMode === 'pct') { discountAmt = Math.min(subtotal, subtotal * discVal / 100); }
-  else { discountAmt = Math.min(subtotal, discVal); }
-  const grandTotal = subtotal - discountAmt;
-  document.getElementById('billSubtotal').textContent = `₹${subtotal.toFixed(2)}`;
-  document.getElementById('discountAmount').textContent = `-₹${discountAmt.toFixed(2)}`;
-  document.getElementById('billGrandTotal').textContent = `₹${grandTotal.toFixed(2)}`;
+  const subtotal  = billItems.reduce((s, i) => s + i.price * i.qty, 0);
+  const discVal   = parseFloat(document.getElementById('discountInput').value) || 0;
+  const discAmt   = discountMode === 'pct'
+    ? Math.min(subtotal, subtotal * discVal / 100)
+    : Math.min(subtotal, discVal);
+  const grand = subtotal - discAmt;
+  document.getElementById('billSubtotal').textContent    = `₹${subtotal.toFixed(2)}`;
+  document.getElementById('discountAmount').textContent  = `-₹${discAmt.toFixed(2)}`;
+  document.getElementById('billGrandTotal').textContent  = `₹${grand.toFixed(2)}`;
 }
 
-/* ======================================================
-   SAVE BILL TO FIREBASE (without freeing table)
-   ====================================================== */
+/* ====================================================
+   SAVE WITHOUT PRINTING
+   ==================================================== */
 function saveAndClose() {
-  if (currentBillOrderId) {
-    db.ref("orders/" + currentBillOrderId).update({
-      items: billItems,
+  if (currentBillAllOrderIds.length) {
+    db.ref('orders/' + currentBillAllOrderIds[0]).update({
+      items: billItems.map(i => ({ id:i.id, name:i.name, qty:i.qty, price:i.price })),
       total: billItems.reduce((s, i) => s + i.price * i.qty, 0)
-    }).then(() => { closeBillModal(); });
+    }).then(() => closeBillModal());
   } else {
     closeBillModal();
   }
 }
 
-/* ======================================================
-   PRINT BILL (then free table)
-   ====================================================== */
+/* ====================================================
+   PRINT BILL + FREE TABLE
+   ==================================================== */
 function printBill() {
-  // Gather values
-  const subtotal = billItems.reduce((s, i) => s + (i.price * i.qty), 0);
-  const discVal = parseFloat(document.getElementById('discountInput').value) || 0;
-  let discountAmt = 0;
-  if (discountMode === 'pct') { discountAmt = Math.min(subtotal, subtotal * discVal / 100); }
-  else { discountAmt = Math.min(subtotal, discVal); }
-  const grandTotal = subtotal - discountAmt;
-  const now = new Date();
+  const subtotal = billItems.reduce((s, i) => s + i.price * i.qty, 0);
+  const discVal  = parseFloat(document.getElementById('discountInput').value) || 0;
+  const discAmt  = discountMode === 'pct'
+    ? Math.min(subtotal, subtotal * discVal / 100)
+    : Math.min(subtotal, discVal);
+  const grand = subtotal - discAmt;
+  const now   = new Date();
   const dateStr = now.toLocaleDateString('en-IN');
-  const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-  const orderNo = currentBillOrderId ? currentBillOrderId.replace('ORD','') : Date.now();
+  const timeStr = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+  const orderNo = currentBillAllOrderIds.length ? currentBillAllOrderIds[0].replace('ORD','') : Date.now();
+  const discLabel = discAmt > 0
+    ? (discountMode === 'pct' ? `Discount (${discVal}%)` : 'Discount')
+    : '';
 
-  // Discount label
-  let discLabel = '';
-  if (discountAmt > 0) {
-    discLabel = discountMode === 'pct'
-      ? `Discount (${discVal}%)`
-      : `Discount`;
-  }
-
-  // Build print HTML
-  const itemsHTML = billItems.map(i => `
-    <div class="print-item-row">
+  const itemsHTML = billItems.map(i =>
+    `<div class="print-item-row">
       <span class="print-item-name">${i.name}</span>
       <span class="print-item-qty">x${i.qty}</span>
       <span class="print-item-price">${(i.price * i.qty).toFixed(2)}</span>
-    </div>
-  `).join('');
+     </div>`
+  ).join('');
 
-  const discountHTML = discountAmt > 0 ? `
-    <div class="print-total-row">
-      <span>${discLabel}</span>
-      <span>-${discountAmt.toFixed(2)}</span>
-    </div>
-  ` : '';
+  const discountHTML = discAmt > 0
+    ? `<div class="print-total-row"><span>${discLabel}</span><span>-${discAmt.toFixed(2)}</span></div>`
+    : '';
 
   document.getElementById('print-area').innerHTML = `
     <div class="print-header">
       <div class="print-restaurant">EMERALD</div>
-      <div class="print-tagline">Fine Dining & Hospitality</div>
-      <div style="font-size:10px; color:#555; margin-top:4px;">Open Daily: 12:00 PM – 11:00 PM</div>
+      <div class="print-tagline">Fine Dining &amp; Hospitality</div>
+      <div style="font-size:10px;color:#555;margin-top:4px;">Open Daily: 12:00 PM – 11:00 PM</div>
     </div>
     <hr class="print-divider">
     <div class="print-info-row"><span>Order No:</span><span>#${orderNo}</span></div>
@@ -1173,100 +943,40 @@ function printBill() {
       <div class="print-total-row"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
       ${discountHTML}
       <hr class="print-divider">
-      <div class="print-grand-row"><span>TOTAL</span><span>₹${grandTotal.toFixed(2)}</span></div>
+      <div class="print-grand-row"><span>TOTAL</span><span>₹${grand.toFixed(2)}</span></div>
     </div>
     <hr class="print-divider">
     <div class="print-thankyou">Thank You! 🙏</div>
     <div class="print-footer">Visit us again • EMERALD Restaurant<br>*This is your bill receipt*</div>
   `;
 
-  // Mark ALL rounds (orders) for this table as Completed
+  // Mark ALL rounds as Completed with consolidated bill data
   const billedAt = new Date().toISOString();
-  const idsToComplete = (currentBillAllOrderIds && currentBillAllOrderIds.length > 0)
-    ? currentBillAllOrderIds
-    : (currentBillOrderId ? [currentBillOrderId] : []);
-
-  if (idsToComplete.length === 0) {
-    console.warn('printBill: no order IDs to complete');
-  }
-
-  idsToComplete.forEach((oid, idx) => {
+  currentBillAllOrderIds.forEach((oid, idx) => {
     if (!oid) return;
-    const upd = { status: 'Completed', billedAt: billedAt };
+    const upd = { status: 'Completed', billedAt };
     if (idx === 0) {
-      // Store full consolidated bill on the main/first order
-      upd.items        = billItems.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price }));
-      upd.total        = subtotal;
-      upd.grandTotal   = grandTotal;
-      upd.discount     = discountAmt;
-      upd.customerName = 'Table ' + currentBillTableNumber;
-      upd.tableNumber  = currentBillTableNumber;
-      upd.orderType    = 'dinein';
+      Object.assign(upd, {
+        items:        billItems.map(i => ({ id:i.id, name:i.name, qty:i.qty, price:i.price })),
+        total:        subtotal,
+        grandTotal:   grand,
+        discount:     discAmt,
+        customerName: 'Table ' + currentBillTableNumber,
+        tableNumber:  currentBillTableNumber,
+        orderType:    'dinein'
+      });
     }
     db.ref('orders/' + oid).update(upd)
       .catch(e => console.error('Error completing order ' + oid + ':', e));
   });
 
   closeBillModal();
-
-  // Trigger browser print
   window.print();
-  // Table will auto-clear because the orders listener sees status = Completed
 }
 
-// Start Firebase real-time listeners immediately
-(function startListeners() {
-  // Show connecting status
-  const tablesDiv = document.getElementById('tables');
-  if (tablesDiv) tablesDiv.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔄</div><div>Connecting to Firebase...</div></div>';
-
-  db.ref('orders').on('value', (snapshot) => {
-    try {
-      // Update connection status
-      const dot = document.getElementById('conn-dot');
-      const txt = document.getElementById('conn-text');
-      if (dot) dot.style.background = '#22c55e';
-      if (txt) txt.textContent = 'Live';
-
-      const data = snapshot.val();
-      if (!data || typeof data !== 'object') {
-        allOrders = [];
-      } else {
-        allOrders = Object.values(data).filter(o => o && typeof o === 'object' && o.id);
-      }
-      rebuildTablesFromOrders();
-      renderManagerDashboard();
-    } catch(e) {
-      console.error('orders listener error:', e);
-    }
-  }, (error) => {
-    console.error('Firebase orders read error:', error);
-    const dot = document.getElementById('conn-dot');
-    const txt = document.getElementById('conn-text');
-    if (dot) dot.style.background = '#ef4444';
-    if (txt) txt.textContent = 'Firebase error: ' + error.message;
-    const td = document.getElementById('tables');
-    if (td) td.innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><div>Firebase error: ' + error.message + '<br><small>Check browser console for details</small></div></div>';
-  });
-
-  db.ref('queue').on('value', (snapshot) => {
-    try {
-      const queueData = snapshot.val();
-      if (!queueData || typeof queueData !== 'object') {
-        allQueue = [];
-      } else {
-        allQueue = Object.values(queueData).filter(q => q && typeof q === 'object');
-      }
-      renderManagerDashboard();
-    } catch(e) {
-      console.error('queue listener error:', e);
-    }
-  });
-})();
-
-/* ======================================================
+/* ====================================================
    TAB SWITCHING
-   ====================================================== */
+   ==================================================== */
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -1275,82 +985,67 @@ function switchTab(name) {
   if (name === 'history') loadHistory();
 }
 
-/* ======================================================
+/* ====================================================
    BILL HISTORY
-   ====================================================== */
-let historyData = [];        // all completed orders from Firebase
-let filteredHistory = [];    // after date filter
-let histPage = 1;
-const HIST_PAGE_SIZE = 20;
-
-/* Set default dates on load — current month */
+   ==================================================== */
+// Default date range = today
 (function initHistoryDates() {
-  const now = new Date();
-  const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0');
-  document.getElementById('histFrom').value = `${y}-${m}-01`;
-  document.getElementById('histTo').value = now.toISOString().split('T')[0];
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('histFrom').value = today;
+  document.getElementById('histTo').value   = today;
 })();
 
 function setCurrentMonth() {
   const now = new Date();
-  const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0');
+  const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2,'0');
   document.getElementById('histFrom').value = `${y}-${m}-01`;
-  document.getElementById('histTo').value = now.toISOString().split('T')[0];
+  document.getElementById('histTo').value   = now.toISOString().split('T')[0];
   applyHistoryFilter();
 }
-
 function setToday() {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('histFrom').value = today;
-  document.getElementById('histTo').value = today;
+  document.getElementById('histTo').value   = today;
   applyHistoryFilter();
 }
-
 function clearFilter() {
   document.getElementById('histFrom').value = '';
-  document.getElementById('histTo').value = '';
+  document.getElementById('histTo').value   = '';
   applyHistoryFilter();
 }
 
 function loadHistory() {
   const tbody = document.getElementById('historyBody');
-  if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="no-history"><div class="no-history-icon">🔄</div><div>Loading...</div></td></tr>';
+  if (tbody) tbody.innerHTML =
+    '<tr><td colspan="8" class="no-history"><div class="no-history-icon">🔄</div><div>Loading...</div></td></tr>';
 
-  db.ref('orders').once('value', (snapshot) => {
-    const data = snapshot.val();
-    if (!data || typeof data !== 'object') {
-      historyData = [];
-    } else {
-      historyData = Object.values(data)
-        .filter(o => o && typeof o === 'object' && o.id &&
-                     (o.status === 'Completed' || o.status === 'Cancelled' || o.billedAt))
-        .sort((a, b) => {
-          const ta = a.billedAt ? new Date(a.billedAt).getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
-          const tb = b.billedAt ? new Date(b.billedAt).getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
-          return tb - ta;
-        });
-    }
+  db.ref('orders').once('value', snap => {
+    const data = snap.val();
+    historyData = !data ? [] : Object.values(data)
+      .filter(o => o && o.id && (o.status === 'Completed' || o.status === 'Cancelled' || o.billedAt))
+      .sort((a, b) => {
+        const ta = a.billedAt ? new Date(a.billedAt).getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+        const tb = b.billedAt ? new Date(b.billedAt).getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
+        return tb - ta;
+      });
     applyHistoryFilter();
-  }, (err) => {
-    console.error('loadHistory error:', err);
-    if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="no-history"><div>Error loading history: ' + err.message + '</div></td></tr>';
+  }, err => {
+    if (tbody) tbody.innerHTML =
+      `<tr><td colspan="8" class="no-history"><div>Error: ${err.message}</div></td></tr>`;
   });
 }
 
 function applyHistoryFilter() {
   const from = document.getElementById('histFrom').value;
   const to   = document.getElementById('histTo').value;
-
   filteredHistory = historyData.filter(o => {
-    const raw = o.billedAt || (o.timestamp ? new Date(o.timestamp).toISOString() : null);
-    if (!raw) return false;
-    const d = new Date(raw);
-    const ds = d.toISOString().split('T')[0];
+    const raw = o.billedAt || o.createdAt;
+    if (!raw) return true; // include if no date
+    const ds = new Date(raw).toISOString().split('T')[0];
     if (from && ds < from) return false;
     if (to   && ds > to)   return false;
     return true;
   });
-
   histPage = 1;
   renderHistoryStats();
   renderHistoryTable();
@@ -1358,73 +1053,64 @@ function applyHistoryFilter() {
 
 function renderHistoryStats() {
   const completed = filteredHistory.filter(o => o.status === 'Completed');
-  const totalRev = completed.reduce((s, o) => s + (o.grandTotal || o.total || 0), 0);
+  const totalRev  = completed.reduce((s, o) => s + (o.grandTotal || o.total || 0), 0);
   const totalDisc = completed.reduce((s, o) => s + (o.discount || 0), 0);
   const avg = completed.length ? totalRev / completed.length : 0;
-
-  document.getElementById('statOrders').textContent = completed.length;
-  document.getElementById('statRevenue').textContent = '₹' + totalRev.toFixed(0);
-  document.getElementById('statAvg').textContent = completed.length ? '₹' + avg.toFixed(0) : '—';
-  document.getElementById('statDiscount').textContent = totalDisc > 0 ? '₹' + totalDisc.toFixed(0) : '₹0';
+  document.getElementById('statOrders').textContent   = completed.length;
+  document.getElementById('statRevenue').textContent  = '₹' + totalRev.toFixed(0);
+  document.getElementById('statAvg').textContent      = completed.length ? '₹' + avg.toFixed(0) : '—';
+  document.getElementById('statDiscount').textContent = '₹' + totalDisc.toFixed(0);
 }
 
 function renderHistoryTable() {
-  const tbody = document.getElementById('historyBody');
+  const tbody      = document.getElementById('historyBody');
   const pagination = document.getElementById('histPagination');
 
-  if (filteredHistory.length === 0) {
+  if (!filteredHistory.length) {
     tbody.innerHTML = `<tr><td colspan="8"><div class="no-history"><div class="no-history-icon">📭</div><div>No orders found for this period</div></div></td></tr>`;
     pagination.innerHTML = '';
     return;
   }
 
   const totalPages = Math.ceil(filteredHistory.length / HIST_PAGE_SIZE);
-  const start = (histPage - 1) * HIST_PAGE_SIZE;
-  const pageData = filteredHistory.slice(start, start + HIST_PAGE_SIZE);
+  const start      = (histPage - 1) * HIST_PAGE_SIZE;
+  const pageData   = filteredHistory.slice(start, start + HIST_PAGE_SIZE);
 
   tbody.innerHTML = pageData.map((order, idx) => {
     const globalIdx = start + idx + 1;
-    const rawDate = order.billedAt || (order.timestamp ? new Date(order.timestamp).toISOString() : null);
-    const dateObj = rawDate ? new Date(rawDate) : null;
-    const dateStr  = dateObj ? dateObj.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'2-digit' }) : '—';
-    const timeStr  = dateObj ? dateObj.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) : '';
+    const rawDate   = order.billedAt || order.createdAt;
+    const dateObj   = rawDate ? new Date(rawDate) : null;
+    const dateStr   = dateObj ? dateObj.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'2-digit' }) : '—';
+    const timeStr   = dateObj ? dateObj.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) : '';
     const statusBadge = order.status === 'Completed'
       ? '<span class="hist-badge completed">Completed</span>'
       : '<span class="hist-badge cancelled">Cancelled</span>';
     const typeBadge = order.orderType === 'dinein'
       ? '<span class="hist-badge dinein">Dine-In</span>'
       : '<span class="hist-badge takeaway">Takeaway</span>';
-    const tableLabel = order.orderType === 'dinein' ? (order.tableNumber || '—') : '—';
-    const itemCount  = Array.isArray(order.items) ? order.items.length : '—';
     const total = order.grandTotal || order.total || 0;
-    const orderId = order.id || '';
+    const items = Array.isArray(order.items) ? order.items : [];
+    const oid = order.id || '';
 
     return `
-      <tr onclick="toggleOrderDetail('${orderId}', this)" style="user-select:none;">
+      <tr onclick="toggleOrderDetail('${oid}',this)" style="user-select:none;">
         <td style="color:var(--text-muted);font-size:12px;">#${globalIdx}</td>
-        <td>
-          <div style="font-weight:600;">${dateStr}</div>
-          <div style="font-size:12px;color:var(--text-muted);">${timeStr}</div>
-        </td>
-        <td>${order.customerName || order.name || 'Guest'}</td>
+        <td><div style="font-weight:600;">${dateStr}</div><div style="font-size:12px;color:var(--text-muted);">${timeStr}</div></td>
+        <td>${order.customerName || 'Guest'}</td>
         <td>${typeBadge}</td>
-        <td>${tableLabel}</td>
-        <td style="color:var(--text-muted);">${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
+        <td>${order.orderType === 'dinein' ? (order.tableNumber || '—') : '—'}</td>
+        <td style="color:var(--text-muted);">${items.length} item${items.length !== 1 ? 's' : ''}</td>
         <td>${statusBadge}</td>
         <td class="hist-amount">₹${total.toFixed(2)}</td>
       </tr>
-      <tr id="detail-${orderId}" class="detail-row" style="display:none;">
-        <td colspan="8" style="padding:0 16px 12px;">
-          ${renderOrderDetail(order)}
-        </td>
-      </tr>
-    `;
+      <tr id="detail-${oid}" style="display:none;">
+        <td colspan="8" style="padding:0 16px 12px;">${renderOrderDetail(order)}</td>
+      </tr>`;
   }).join('');
 
   // Pagination
   if (totalPages <= 1) { pagination.innerHTML = ''; return; }
-  let pages = '';
-  pages += `<button class="page-btn" onclick="goHistPage(${histPage-1})" ${histPage===1?'disabled':''}>‹ Prev</button>`;
+  let pages = `<button class="page-btn" onclick="goHistPage(${histPage-1})" ${histPage===1?'disabled':''}>‹ Prev</button>`;
   for (let i = 1; i <= totalPages; i++) {
     if (i === 1 || i === totalPages || Math.abs(i - histPage) <= 1) {
       pages += `<button class="page-btn ${i===histPage?'active':''}" onclick="goHistPage(${i})">${i}</button>`;
@@ -1437,259 +1123,229 @@ function renderHistoryTable() {
 }
 
 function goHistPage(p) {
-  const totalPages = Math.ceil(filteredHistory.length / HIST_PAGE_SIZE);
-  if (p < 1 || p > totalPages) return;
+  const total = Math.ceil(filteredHistory.length / HIST_PAGE_SIZE);
+  if (p < 1 || p > total) return;
   histPage = p;
   renderHistoryTable();
-  document.getElementById('panel-history').scrollIntoView({ behavior: 'smooth' });
 }
 
 function renderOrderDetail(order) {
-  const items = Array.isArray(order.items) ? order.items : [];
-  const subtotal = items.reduce((s, i) => s + (i.price * i.qty), 0);
-  const disc = order.discount || 0;
-  const grand = order.grandTotal || order.total || subtotal;
-  const diet = order.diet ? `<span style="margin-left:12px;color:var(--text-muted);">Diet: ${order.diet}</span>` : '';
-  const people = order.people ? `<span style="color:var(--text-muted);">👥 ${order.people} ${order.people===1?'person':'people'}</span>` : '';
+  const items    = Array.isArray(order.items) ? order.items : [];
+  const subtotal = items.reduce((s, i) => s + (parseFloat(i.price) * parseInt(i.qty)), 0);
+  const disc     = order.discount || 0;
+  const grand    = order.grandTotal || order.total || subtotal;
 
-  const itemRows = items.length > 0
+  const itemRows = items.length
     ? items.map(i => `
-        <li class="drawer-item-row">
-          <span class="drawer-item-name">${i.name}</span>
-          <span class="drawer-item-qty">× ${i.qty}</span>
-          <span class="drawer-item-price">₹${(i.price * i.qty).toFixed(2)}</span>
-        </li>`).join('')
-    : '<li class="drawer-item-row"><span style="color:var(--text-muted)">No item details recorded</span></li>';
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#d1d5db;border-bottom:1px solid rgba(255,255,255,0.05);">
+          <span style="flex:1;">${i.name}</span>
+          <span style="color:#94a3b8;margin:0 12px;">× ${i.qty}</span>
+          <span style="color:#ffcc00;font-weight:600;">₹${(parseFloat(i.price)*parseInt(i.qty)).toFixed(2)}</span>
+        </div>`).join('')
+    : '<div style="color:#94a3b8;font-size:13px;">No item details recorded</div>';
 
   return `
     <div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:16px;margin-top:4px;">
-      <div class="drawer-meta">${people}${diet}</div>
-      <ul class="drawer-items" style="margin-top:10px;">${itemRows}</ul>
-      <div class="drawer-totals">
-        <div class="drawer-total-row"><span style="color:var(--text-muted)">Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
-        ${disc > 0 ? `<div class="drawer-total-row"><span style="color:var(--danger)">Discount</span><span style="color:var(--danger)">-₹${disc.toFixed(2)}</span></div>` : ''}
-        <div class="drawer-total-row drawer-grand"><span>Grand Total</span><span>₹${grand.toFixed(2)}</span></div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">
+        Diet: ${order.diet || 'Regular'} · People: ${order.people || 1}
       </div>
-    </div>
-  `;
+      ${itemRows}
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+          <span style="color:#94a3b8;">Subtotal</span><span>₹${subtotal.toFixed(2)}</span>
+        </div>
+        ${disc > 0 ? `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+          <span style="color:#ef4444;">Discount</span><span style="color:#ef4444;">-₹${disc.toFixed(2)}</span>
+        </div>` : ''}
+        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:#ffcc00;">
+          <span>Grand Total</span><span>₹${grand.toFixed(2)}</span>
+        </div>
+      </div>
+    </div>`;
 }
 
-let openDetailId = null;
-function toggleOrderDetail(orderId, row) {
+function toggleOrderDetail(orderId) {
   if (!orderId) return;
-  const detailRow = document.getElementById('detail-' + orderId);
-  if (!detailRow) return;
-  const isOpen = detailRow.style.display !== 'none';
-  // Close any open
-  document.querySelectorAll('.detail-row').forEach(r => r.style.display = 'none');
-  if (!isOpen) detailRow.style.display = 'table-row';
+  const row = document.getElementById('detail-' + orderId);
+  if (!row) return;
+  const isOpen = row.style.display !== 'none';
+  document.querySelectorAll('[id^="detail-"]').forEach(r => r.style.display = 'none');
+  if (!isOpen) row.style.display = 'table-row';
 }
 
-
-/* ======================================================
-   EXPORT FUNCTIONS — EXCEL & PDF
-   ====================================================== */
-
+/* ====================================================
+   EXPORT — uses filteredHistory if available, else all
+   ==================================================== */
 function getExportRows() {
-  // Use filteredHistory if available and non-empty, else all completed orders
-  const src = (filteredHistory && filteredHistory.length > 0) ? filteredHistory : historyData;
-  return src;
+  if (filteredHistory && filteredHistory.length > 0) return filteredHistory;
+  return historyData;
+}
+
+function ensureHistoryLoaded(callback) {
+  if (historyData.length > 0) { callback(getExportRows()); return; }
+  // Load history first then call back
+  db.ref('orders').once('value', snap => {
+    const data = snap.val();
+    historyData = !data ? [] : Object.values(data)
+      .filter(o => o && o.id && (o.status === 'Completed' || o.status === 'Cancelled' || o.billedAt))
+      .sort((a, b) => {
+        const ta = a.billedAt ? new Date(a.billedAt).getTime() : 0;
+        const tb = b.billedAt ? new Date(b.billedAt).getTime() : 0;
+        return tb - ta;
+      });
+    applyHistoryFilter();
+    callback(getExportRows());
+  });
 }
 
 function exportExcel() {
-  const rows = getExportRows();
-  if (!rows || rows.length === 0) {
-    alert('No data to export. Please load history first (click Bill History tab).');
-    return;
-  }
+  ensureHistoryLoaded(rows => {
+    if (!rows.length) { alert('No data to export.'); return; }
 
-  const wsData = [
-    ['#', 'Date', 'Time', 'Order ID', 'Customer', 'Order Type', 'Table No', 'Items Count', 'Item Details', 'Subtotal (₹)', 'Discount (₹)', 'Grand Total (₹)', 'Status', 'Diet', 'People']
-  ];
+    const wsData = [
+      ['#','Date','Time','Order ID','Customer','Order Type','Table No','Items Count','Item Details','Subtotal (₹)','Discount (₹)','Grand Total (₹)','Status','Diet','People']
+    ];
 
-  rows.forEach((order, idx) => {
-    const rawDate = order.billedAt || (order.timestamp ? new Date(order.timestamp).toISOString() : null);
-    const dateObj = rawDate ? new Date(rawDate) : null;
-    const dateStr = dateObj ? dateObj.toLocaleDateString('en-IN') : '';
-    const timeStr = dateObj ? dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '';
-    const items = Array.isArray(order.items) ? order.items : [];
-    const itemDetails = items.map(i => i.name + ' x' + i.qty + ' @₹' + i.price).join(' | ');
-    const subtotal = items.reduce((s, i) => s + (i.price * i.qty), 0);
-    const discount = order.discount || 0;
-    const grandTotal = order.grandTotal || order.total || subtotal;
+    rows.forEach((order, idx) => {
+      const raw      = order.billedAt || order.createdAt;
+      const dateObj  = raw ? new Date(raw) : null;
+      const dateStr  = dateObj ? dateObj.toLocaleDateString('en-IN') : '';
+      const timeStr  = dateObj ? dateObj.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) : '';
+      const items    = Array.isArray(order.items) ? order.items : [];
+      const details  = items.map(i => `${i.name} x${i.qty} @₹${i.price}`).join(' | ');
+      const subtotal = items.reduce((s, i) => s + parseFloat(i.price) * parseInt(i.qty), 0);
+      const disc     = order.discount || 0;
+      const grand    = order.grandTotal || order.total || subtotal;
 
-    wsData.push([
-      idx + 1,
-      dateStr,
-      timeStr,
-      order.id || '',
-      order.customerName || order.name || 'Guest',
-      order.orderType === 'dinein' ? 'Dine-In' : 'Takeaway',
-      order.orderType === 'dinein' ? (order.tableNumber || '') : '',
-      items.length,
-      itemDetails,
-      subtotal.toFixed(2),
-      discount.toFixed(2),
-      grandTotal.toFixed(2),
-      order.status || '',
-      order.diet || 'Regular',
-      order.people || ''
-    ]);
+      wsData.push([
+        idx + 1, dateStr, timeStr, order.id || '',
+        order.customerName || 'Guest',
+        order.orderType === 'dinein' ? 'Dine-In' : 'Takeaway',
+        order.orderType === 'dinein' ? (order.tableNumber || '') : '',
+        items.length, details,
+        subtotal.toFixed(2), disc.toFixed(2), grand.toFixed(2),
+        order.status || '', order.diet || 'Regular', order.people || ''
+      ]);
+    });
+
+    // Summary
+    const completed = rows.filter(o => o.status === 'Completed');
+    const totalRev  = completed.reduce((s, o) => s + (o.grandTotal || o.total || 0), 0);
+    const totalDisc = completed.reduce((s, o) => s + (o.discount || 0), 0);
+    wsData.push([],[
+      'SUMMARY','','','','','','','','','','','','','',''
+    ],
+      ['Total Orders', completed.length],
+      ['Total Revenue (₹)', totalRev.toFixed(2)],
+      ['Total Discount (₹)', totalDisc.toFixed(2)],
+      ['Average Bill (₹)', completed.length ? (totalRev / completed.length).toFixed(2) : '0.00']
+    );
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws['!cols'] = [
+      {wch:4},{wch:12},{wch:8},{wch:22},{wch:16},{wch:10},{wch:8},{wch:8},
+      {wch:60},{wch:12},{wch:12},{wch:14},{wch:12},{wch:14},{wch:8}
+    ];
+    XLSX.utils.book_append_sheet(wb, ws, 'Revenue Report');
+
+    const from = document.getElementById('histFrom').value;
+    const to   = document.getElementById('histTo').value;
+    const label = (from && to) ? `${from}_to_${to}` : 'all_time';
+    XLSX.writeFile(wb, `EMERALD_Revenue_${label}.xlsx`);
   });
-
-  // Summary rows
-  const completed = rows.filter(o => o.status === 'Completed');
-  const totalRev = completed.reduce((s, o) => s + (o.grandTotal || o.total || 0), 0);
-  const totalDisc = completed.reduce((s, o) => s + (o.discount || 0), 0);
-  wsData.push([]);
-  wsData.push(['SUMMARY', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-  wsData.push(['Total Orders', completed.length]);
-  wsData.push(['Total Revenue (₹)', totalRev.toFixed(2)]);
-  wsData.push(['Total Discount (₹)', totalDisc.toFixed(2)]);
-  wsData.push(['Average Bill (₹)', completed.length ? (totalRev / completed.length).toFixed(2) : '0.00']);
-
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-  // Column widths
-  ws['!cols'] = [
-    {wch:4},{wch:12},{wch:8},{wch:22},{wch:16},{wch:10},{wch:8},{wch:8},
-    {wch:60},{wch:12},{wch:12},{wch:14},{wch:12},{wch:14},{wch:8}
-  ];
-
-  XLSX.utils.book_append_sheet(wb, ws, 'Revenue Report');
-
-  const fromVal = document.getElementById('histFrom').value;
-  const toVal = document.getElementById('histTo').value;
-  const label = (fromVal && toVal) ? (fromVal + '_to_' + toVal) : 'all_time';
-  XLSX.writeFile(wb, 'EMERALD_Revenue_' + label + '.xlsx');
 }
 
 function exportPDF() {
-  const rows = getExportRows();
-  if (!rows || rows.length === 0) {
-    alert('No data to export. Please load history first (click Bill History tab).');
-    return;
-  }
+  ensureHistoryLoaded(rows => {
+    if (!rows.length) { alert('No data to export.'); return; }
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
-  const fromVal = document.getElementById('histFrom').value;
-  const toVal = document.getElementById('histTo').value;
-  const periodLabel = (fromVal && toVal) ? (fromVal + ' to ' + toVal) : 'All Time';
+    const from  = document.getElementById('histFrom').value;
+    const to    = document.getElementById('histTo').value;
+    const label = (from && to) ? `${from} to ${to}` : 'All Time';
 
-  // Header
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(22);
-  doc.setTextColor(40, 40, 40);
-  doc.text('EMERALD', 14, 18);
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(100, 100, 100);
-  doc.text('Revenue Report  |  Period: ' + periodLabel, 14, 26);
-  doc.text('Generated: ' + new Date().toLocaleString('en-IN'), 14, 32);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(40,40,40);
+    doc.text('EMERALD', 14, 18);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100,100,100);
+    doc.text(`Revenue Report  |  Period: ${label}`, 14, 26);
+    doc.text(`Generated: ${new Date().toLocaleString('en-IN')}`, 14, 32);
 
-  // Stats
-  const completed = rows.filter(o => o.status === 'Completed');
-  const totalRev = completed.reduce((s, o) => s + (o.grandTotal || o.total || 0), 0);
-  const totalDisc = completed.reduce((s, o) => s + (o.discount || 0), 0);
-  const avgBill = completed.length ? (totalRev / completed.length) : 0;
+    // Stats bar
+    const completed  = rows.filter(o => o.status === 'Completed');
+    const totalRev   = completed.reduce((s, o) => s + (o.grandTotal || o.total || 0), 0);
+    const totalDisc  = completed.reduce((s, o) => s + (o.discount || 0), 0);
+    const avgBill    = completed.length ? totalRev / completed.length : 0;
 
-  doc.setFillColor(255, 204, 0);
-  doc.roundedRect(14, 36, 60, 16, 2, 2, 'F');
-  doc.roundedRect(80, 36, 60, 16, 2, 2, 'F');
-  doc.roundedRect(146, 36, 60, 16, 2, 2, 'F');
-  doc.roundedRect(212, 36, 60, 16, 2, 2, 'F');
+    [[14,'Total Orders',completed.length],[80,'Revenue','₹'+totalRev.toFixed(2)],
+     [146,'Discount','₹'+totalDisc.toFixed(2)],[212,'Avg Bill',completed.length?'₹'+avgBill.toFixed(2):'-']]
+    .forEach(([x, lbl, val]) => {
+      doc.setFillColor(255,204,0);
+      doc.roundedRect(x, 36, 60, 16, 2, 2, 'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(50,50,50);
+      doc.text(lbl, x+30, 42, { align:'center' });
+      doc.setFontSize(12);
+      doc.text(String(val), x+30, 49, { align:'center' });
+    });
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(50, 50, 50);
-  doc.text('TOTAL ORDERS', 44, 42, { align: 'center' });
-  doc.text('TOTAL REVENUE', 110, 42, { align: 'center' });
-  doc.text('TOTAL DISCOUNT', 176, 42, { align: 'center' });
-  doc.text('AVG BILL VALUE', 242, 42, { align: 'center' });
+    const tableRows = rows.map((order, idx) => {
+      const raw      = order.billedAt || order.createdAt;
+      const dateObj  = raw ? new Date(raw) : null;
+      const dateStr  = dateObj ? dateObj.toLocaleDateString('en-IN') : '';
+      const timeStr  = dateObj ? dateObj.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) : '';
+      const items    = Array.isArray(order.items) ? order.items : [];
+      const subtotal = items.reduce((s, i) => s + parseFloat(i.price) * parseInt(i.qty), 0);
+      const disc     = order.discount || 0;
+      const grand    = order.grandTotal || order.total || subtotal;
+      const summary  = items.length > 0
+        ? items.slice(0,3).map(i => `${i.name} x${i.qty}`).join(', ') + (items.length > 3 ? ` +${items.length-3} more` : '')
+        : 'No items';
 
-  doc.setFontSize(13);
-  doc.text(String(completed.length), 44, 49, { align: 'center' });
-  doc.text('Rs ' + totalRev.toFixed(2), 110, 49, { align: 'center' });
-  doc.text('Rs ' + totalDisc.toFixed(2), 176, 49, { align: 'center' });
-  doc.text(completed.length ? 'Rs ' + avgBill.toFixed(2) : '-', 242, 49, { align: 'center' });
+      return [
+        idx+1, `${dateStr}\n${timeStr}`,
+        order.customerName || 'Guest',
+        order.orderType === 'dinein' ? 'Dine-In' : 'Takeaway',
+        order.orderType === 'dinein' ? (order.tableNumber || '-') : '-',
+        summary,
+        `₹${subtotal.toFixed(2)}`,
+        disc > 0 ? `₹${disc.toFixed(2)}` : '-',
+        `₹${grand.toFixed(2)}`,
+        order.status || ''
+      ];
+    });
 
-  // Table
-  const tableRows = rows.map((order, idx) => {
-    const rawDate = order.billedAt || (order.timestamp ? new Date(order.timestamp).toISOString() : null);
-    const dateObj = rawDate ? new Date(rawDate) : null;
-    const dateStr = dateObj ? dateObj.toLocaleDateString('en-IN') : '';
-    const timeStr = dateObj ? dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '';
-    const items = Array.isArray(order.items) ? order.items : [];
-    const subtotal = items.reduce((s, i) => s + (i.price * i.qty), 0);
-    const discount = order.discount || 0;
-    const grandTotal = order.grandTotal || order.total || subtotal;
-    const itemSummary = items.length > 0
-      ? items.slice(0, 3).map(i => i.name + ' x' + i.qty).join(', ') + (items.length > 3 ? ' +' + (items.length - 3) + ' more' : '')
-      : 'No items';
-
-    return [
-      idx + 1,
-      dateStr + '
-' + timeStr,
-      order.customerName || 'Guest',
-      order.orderType === 'dinein' ? 'Dine-In' : 'Takeaway',
-      order.orderType === 'dinein' ? (order.tableNumber || '-') : '-',
-      itemSummary,
-      'Rs ' + subtotal.toFixed(2),
-      discount > 0 ? 'Rs ' + discount.toFixed(2) : '-',
-      'Rs ' + grandTotal.toFixed(2),
-      order.status || ''
-    ];
-  });
-
-  doc.autoTable({
-    startY: 58,
-    head: [['#', 'Date/Time', 'Customer', 'Type', 'Table', 'Items', 'Subtotal', 'Discount', 'Total', 'Status']],
-    body: tableRows,
-    styles: { fontSize: 8, cellPadding: 2.5, lineColor: [230, 230, 230], lineWidth: 0.1 },
-    headStyles: { fillColor: [30, 41, 59], textColor: [255, 204, 0], fontStyle: 'bold', fontSize: 8 },
-    alternateRowStyles: { fillColor: [245, 245, 245] },
-    columnStyles: {
-      0: { cellWidth: 8 },
-      1: { cellWidth: 22 },
-      2: { cellWidth: 28 },
-      3: { cellWidth: 18 },
-      4: { cellWidth: 12 },
-      5: { cellWidth: 62 },
-      6: { cellWidth: 22 },
-      7: { cellWidth: 22 },
-      8: { cellWidth: 22 },
-      9: { cellWidth: 20 }
-    },
-    didDrawCell: (data) => {
-      if (data.section === 'body' && data.column.index === 9) {
-        const val = data.cell.raw;
-        if (val === 'Completed') {
-          doc.setTextColor(34, 197, 94);
-        } else {
-          doc.setTextColor(239, 68, 68);
-        }
+    doc.autoTable({
+      startY: 58,
+      head: [['#','Date/Time','Customer','Type','Table','Items','Subtotal','Discount','Total','Status']],
+      body: tableRows,
+      styles: { fontSize:8, cellPadding:2.5 },
+      headStyles: { fillColor:[30,41,59], textColor:[255,204,0], fontStyle:'bold', fontSize:8 },
+      alternateRowStyles: { fillColor:[245,245,245] },
+      columnStyles: {
+        0:{cellWidth:8},1:{cellWidth:22},2:{cellWidth:28},3:{cellWidth:18},
+        4:{cellWidth:12},5:{cellWidth:62},6:{cellWidth:22},7:{cellWidth:22},
+        8:{cellWidth:22},9:{cellWidth:20}
       }
+    });
+
+    const pages = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pages; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8); doc.setTextColor(150,150,150);
+      doc.text('EMERALD Restaurant — Confidential Revenue Report', 14, doc.internal.pageSize.height - 8);
+      doc.text(`Page ${i} of ${pages}`, doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 8, { align:'right' });
     }
+
+    const fileLabel = (from && to) ? `${from}_to_${to}` : 'all_time';
+    doc.save(`EMERALD_Revenue_${fileLabel}.pdf`);
   });
-
-  // Footer
-  const pageCount = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    doc.setFontSize(8);
-    doc.setTextColor(150, 150, 150);
-    doc.text('EMERALD Restaurant — Confidential Revenue Report', 14, doc.internal.pageSize.height - 8);
-    doc.text('Page ' + i + ' of ' + pageCount, doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 8, { align: 'right' });
-  }
-
-  const label2 = (fromVal && toVal) ? (fromVal + '_to_' + toVal) : 'all_time';
-  doc.save('EMERALD_Revenue_' + label2 + '.pdf');
 }
-
 </script>
 </body>
 </html>
