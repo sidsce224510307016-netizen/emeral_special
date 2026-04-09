@@ -26,6 +26,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .dashboard-container { max-width: 1200px; margin: 0 auto; }
 .section-header { font-size: 24px; font-weight: 700; margin-bottom: 20px; color: var(--text-light); display: flex; align-items: center; gap: 10px; }
 .section-header::before { content: ''; width: 4px; height: 28px; background: var(--primary-yellow); border-radius: 2px; }
+.section-header.blue-header::before { background: var(--blue); }
 .tables-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 50px; }
 .table-card { background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: transform 0.2s ease; border: 2px solid transparent; }
 .table-card:hover { transform: translateY(-2px); }
@@ -47,6 +48,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .free-btn:hover { background: #dc2626; }
 .bill-btn { flex: 1; padding: 12px; background: var(--primary-yellow); color: #111; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .bill-btn:hover { background: var(--primary-dark); }
+.bill-btn.blue { background: var(--blue); color: #fff; }
+.bill-btn.blue:hover { background: #2563eb; }
 .queue-section { margin-top: 40px; }
 .queue-list { display: flex; flex-direction: column; gap: 16px; }
 .queue-card { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border-left: 4px solid var(--warning); }
@@ -54,6 +57,20 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .queue-meta { display: flex; gap: 20px; font-size: 14px; color: var(--text-muted); }
 .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 16px; }
 .empty-state-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+
+/* TAKEAWAY LIVE ORDERS */
+.takeaway-section { margin-top: 40px; }
+.takeaway-order-card {
+  background: var(--card-bg); padding: 24px; border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  border: 2px solid rgba(59,130,246,0.25);
+  transition: transform 0.2s ease;
+}
+.takeaway-order-card:hover { transform: translateY(-2px); border-color: rgba(59,130,246,0.5); }
+.takeaway-order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.takeaway-customer-name { font-size: 18px; font-weight: 700; color: #60a5fa; }
+.takeaway-badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; background: rgba(59,130,246,0.15); color: #60a5fa; letter-spacing: 0.5px; }
+.takeaway-details { background: rgba(59,130,246,0.07); padding: 16px; border-radius: 12px; margin-bottom: 16px; border-left: 3px solid var(--blue); }
 
 /* BILL MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9000; display: none; justify-content: center; align-items: flex-start; padding: 20px; overflow-y: auto; }
@@ -107,18 +124,11 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .discount-toggle button { padding: 6px 14px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; color: var(--text-muted); background: transparent; }
 .discount-toggle button.active { background: var(--primary-yellow); color: #111; }
 
-/* PAYMENT METHOD SECTION */
+/* PAYMENT METHOD */
 .payment-section { margin-top: 20px; margin-bottom: 20px; }
 .payment-title { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
 .payment-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.payment-option {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 6px; padding: 14px 8px; background: rgba(255,255,255,0.05);
-  border: 2px solid rgba(255,255,255,0.1); border-radius: 12px;
-  cursor: pointer; transition: all 0.2s ease; font-size: 12px;
-  font-weight: 700; color: var(--text-muted); text-align: center;
-  user-select: none;
-}
+.payment-option { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 14px 8px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; font-size: 12px; font-weight: 700; color: var(--text-muted); text-align: center; user-select: none; }
 .payment-option:hover { background: rgba(255,204,0,0.08); border-color: rgba(255,204,0,0.3); color: var(--text-light); }
 .payment-option.selected { background: rgba(255,204,0,0.15); border-color: var(--primary-yellow); color: var(--primary-yellow); }
 .payment-option .pay-icon { font-size: 22px; }
@@ -251,14 +261,25 @@ const db = firebase.database();
 
 <div class="tab-panel active" id="panel-live">
   <div class="dashboard-container">
+
+    <!-- DINE-IN TABLES -->
     <h2 class="section-header">Tables Status</h2>
     <div id="tables" class="tables-grid">
       <div class="empty-state"><div class="empty-state-icon">🔄</div><div>Connecting to Firebase...</div></div>
     </div>
+
+    <!-- WAITING QUEUE -->
     <div class="queue-section">
       <h2 class="section-header">Waiting Queue</h2>
       <div id="queue" class="queue-list"></div>
     </div>
+
+    <!-- TAKEAWAY LIVE ORDERS -->
+    <div class="takeaway-section">
+      <h2 class="section-header blue-header">🛍️ Takeaway Orders</h2>
+      <div id="takeaway-orders-list" class="tables-grid"></div>
+    </div>
+
   </div>
 </div>
 
@@ -304,15 +325,11 @@ const db = firebase.database();
       <button class="close-btn" onclick="closeBillModal()">✕</button>
     </div>
     <div class="bill-modal-body">
-
-      <!-- Add items -->
       <div style="margin-bottom:20px;">
         <div class="add-items-title">➕ Add Items to Bill</div>
         <input type="text" class="menu-search-input" id="menuSearchInput" placeholder="Search menu items..." oninput="searchMenuItems()">
         <div class="menu-results" id="menuResults"></div>
       </div>
-
-      <!-- Bill items table -->
       <div style="margin-bottom:20px;">
         <div class="add-items-title">📋 Order Items</div>
         <table class="bill-table">
@@ -320,8 +337,6 @@ const db = firebase.database();
           <tbody id="billItemsBody"><tr><td colspan="5" class="empty-bill-msg">Loading...</td></tr></tbody>
         </table>
       </div>
-
-      <!-- Totals -->
       <div class="bill-totals">
         <div class="total-row"><span class="total-label">Subtotal</span><span class="total-value" id="billSubtotal">₹0.00</span></div>
         <div class="discount-row">
@@ -339,42 +354,21 @@ const db = firebase.database();
           <span class="grand-total-value" id="billGrandTotal">₹0.00</span>
         </div>
       </div>
-
-      <!-- PAYMENT METHOD -->
       <div class="payment-section">
         <div class="payment-title">💳 Payment Method</div>
         <div class="payment-grid">
-          <div class="payment-option selected" onclick="selectPayment('Cash')" id="pay-Cash">
-            <span class="pay-icon">💵</span>
-            <span class="pay-label">CASH</span>
-          </div>
-          <div class="payment-option" onclick="selectPayment('UPI')" id="pay-UPI">
-            <span class="pay-icon">📱</span>
-            <span class="pay-label">UPI</span>
-          </div>
-          <div class="payment-option" onclick="selectPayment('Card')" id="pay-Card">
-            <span class="pay-icon">💳</span>
-            <span class="pay-label">CARD</span>
-          </div>
-          <div class="payment-option" onclick="selectPayment('IMPS')" id="pay-IMPS">
-            <span class="pay-icon">🏦</span>
-            <span class="pay-label">IMPS</span>
-          </div>
-          <div class="payment-option" onclick="selectPayment('NEFT')" id="pay-NEFT">
-            <span class="pay-icon">🔁</span>
-            <span class="pay-label">NEFT</span>
-          </div>
-          <div class="payment-option" onclick="selectPayment('Split')" id="pay-Split">
-            <span class="pay-icon">✂️</span>
-            <span class="pay-label">SPLIT</span>
-          </div>
+          <div class="payment-option selected" onclick="selectPayment('Cash')" id="pay-Cash"><span class="pay-icon">💵</span><span class="pay-label">CASH</span></div>
+          <div class="payment-option" onclick="selectPayment('UPI')" id="pay-UPI"><span class="pay-icon">📱</span><span class="pay-label">UPI</span></div>
+          <div class="payment-option" onclick="selectPayment('Card')" id="pay-Card"><span class="pay-icon">💳</span><span class="pay-label">CARD</span></div>
+          <div class="payment-option" onclick="selectPayment('IMPS')" id="pay-IMPS"><span class="pay-icon">🏦</span><span class="pay-label">IMPS</span></div>
+          <div class="payment-option" onclick="selectPayment('NEFT')" id="pay-NEFT"><span class="pay-icon">🔁</span><span class="pay-label">NEFT</span></div>
+          <div class="payment-option" onclick="selectPayment('Split')" id="pay-Split"><span class="pay-icon">✂️</span><span class="pay-label">SPLIT</span></div>
         </div>
       </div>
-
     </div>
     <div class="bill-modal-footer">
       <button class="save-btn" onclick="saveAndClose()">💾 Save Only</button>
-      <button class="print-btn" onclick="printBill()">🖨️ Print &amp; Free Table</button>
+      <button class="print-btn" onclick="printBill()">🖨️ Print &amp; Complete</button>
     </div>
   </div>
 </div>
@@ -383,7 +377,7 @@ const db = firebase.database();
 
 <script>
 /* ============================================================
-   MENU DATA (flat list matching menu.html)
+   MENU DATA
    ============================================================ */
 const allMenuItems = [
   {id:'st1',name:'Corn Tikki',price:200},{id:'st2',name:'Paneer Tikka Dry',price:235},
@@ -511,8 +505,10 @@ let filteredHistory = [];
 let histPage = 1;
 const HIST_PAGE_SIZE = 20;
 
-let currentBillTableNumber = null;
+let currentBillTableNumber = null;  // null = takeaway
 let currentBillAllOrderIds = [];
+let currentBillCustomerName = '';   // for takeaway
+let currentBillOrderType = 'dinein'; // 'dinein' | 'takeaway'
 let billItems = [];
 let discountMode = 'pct';
 let selectedPaymentMethod = 'Cash';
@@ -548,9 +544,12 @@ function buildTableMap() {
   const base = {};
   for (let i = 1; i <= 23; i++) base[i] = { number: i, capacity: 4, occupied: false, current: null };
 
+  // Only dine-in orders (have a numeric tableNumber)
   const active = allOrders.filter(o =>
     o.status !== 'Completed' && o.status !== 'Cancelled' &&
-    o.tableNumber !== undefined && o.tableNumber !== null
+    o.orderType !== 'takeaway' && o.type !== 'takeaway' && !o.isTakeaway &&
+    o.tableNumber !== undefined && o.tableNumber !== null &&
+    o.tableNumber !== 'takeaway'
   );
 
   const grouped = {};
@@ -564,10 +563,7 @@ function buildTableMap() {
   Object.entries(grouped).forEach(([tStr, orders]) => {
     const t = parseInt(tStr);
     if (!base[t]) base[t] = { number: t, capacity: 4, occupied: false, current: null };
-    orders.sort((a, b) => {
-      return (a.createdAt ? new Date(a.createdAt).getTime() : 0) -
-             (b.createdAt ? new Date(b.createdAt).getTime() : 0);
-    });
+    orders.sort((a, b) => (a.createdAt ? new Date(a.createdAt).getTime() : 0) - (b.createdAt ? new Date(b.createdAt).getTime() : 0));
     const first = orders[0];
     const anyPreparing = orders.some(o => o.status === 'Preparing');
     const allItems = orders.flatMap(o => Array.isArray(o.items) ? o.items : []);
@@ -589,17 +585,19 @@ function buildTableMap() {
    RENDER DASHBOARD
    ============================================================ */
 function renderManagerDashboard() {
-  const tableMap = buildTableMap();
+  const tableMap  = buildTableMap();
   const tablesDiv = document.getElementById('tables');
-  const queueDiv = document.getElementById('queue');
+  const queueDiv  = document.getElementById('queue');
+  const twDiv     = document.getElementById('takeaway-orders-list');
   if (!tablesDiv) return;
 
   tablesDiv.innerHTML = '';
-  queueDiv.innerHTML = '';
+  queueDiv.innerHTML  = '';
 
+  // ── Dine-in Tables ──
   Object.values(tableMap).sort((a, b) => a.number - b.number).forEach(t => {
     const occupiedClass = t.occupied ? 'occupied' : '';
-    const statusClass = t.occupied ? 'occupied' : 'free';
+    const statusClass   = t.occupied ? 'occupied' : 'free';
     let customerHTML = '';
     if (t.current) {
       const min = Math.floor((Date.now() - t.current.since) / 60000);
@@ -631,6 +629,7 @@ function renderManagerDashboard() {
       </div>`;
   });
 
+  // ── Queue ──
   if (!allQueue.length) {
     queueDiv.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📋</div><div>No customers waiting</div></div>`;
   } else {
@@ -638,6 +637,50 @@ function renderManagerDashboard() {
       const wait = Math.floor((Date.now() - (q.time || Date.now())) / 60000);
       queueDiv.innerHTML += `<div class="queue-card"><div class="queue-name">${q.name || 'Customer'}</div><div class="queue-meta"><span>👥 ${q.people || 1}</span><span>⏱️ ${wait} min</span></div></div>`;
     });
+  }
+
+  // ── Takeaway Live Orders ──
+  if (!twDiv) return;
+
+  const activeTakeaway = allOrders.filter(o =>
+    o.status !== 'Completed' && o.status !== 'Cancelled' &&
+    (o.orderType === 'takeaway' || o.type === 'takeaway' || o.isTakeaway)
+  );
+
+  if (!activeTakeaway.length) {
+    twDiv.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">🛍️</div><div>No active takeaway orders</div></div>`;
+  } else {
+    twDiv.innerHTML = '';
+    activeTakeaway
+      .sort((a, b) => (a.createdAt ? new Date(a.createdAt).getTime() : 0) - (b.createdAt ? new Date(b.createdAt).getTime() : 0))
+      .forEach(order => {
+        const min = order.createdAt ? Math.floor((Date.now() - new Date(order.createdAt).getTime()) / 60000) : 0;
+        const items = Array.isArray(order.items) ? order.items : [];
+        const isPrep = order.status === 'Preparing';
+        const sc = isPrep ? '#f59e0b' : '#22c55e';
+        const statusLabel = isPrep ? 'Preparing' : (order.status || 'New');
+        const name = order.customerName || order.name || 'Guest';
+
+        twDiv.innerHTML += `
+          <div class="takeaway-order-card">
+            <div class="takeaway-order-header">
+              <div class="takeaway-customer-name">🛍️ ${name}</div>
+              <div class="takeaway-badge">Takeaway</div>
+            </div>
+            <div class="takeaway-details">
+              <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#94a3b8;">
+                <span>🍽️ ${items.length} item${items.length !== 1 ? 's' : ''}</span>
+                <span>⏱️ ${min} min ago</span>
+                <span style="color:${sc};font-weight:700;">● ${statusLabel}</span>
+              </div>
+              ${items.length > 0 ? `<div style="margin-top:10px;font-size:12px;color:#64748b;">${items.slice(0,3).map(i => i.name + ' x' + i.qty).join(', ')}${items.length > 3 ? ` +${items.length-3} more` : ''}</div>` : ''}
+            </div>
+            <div class="btn-row">
+              <button onclick="openTakeawayBillModal('${order.id}','${name.replace(/'/g,"\\'")}')" class="bill-btn blue">🧾 Bill</button>
+              <button onclick="cancelTakeawayOrder('${order.id}')" class="free-btn">✕ Cancel</button>
+            </div>
+          </div>`;
+      });
   }
 }
 
@@ -648,18 +691,15 @@ function freeTable(tableNumber) {
   if (!confirm(`Clear Table ${tableNumber}? Marks all active orders as Completed.`)) return;
   const billedAt = new Date().toISOString();
   allOrders.forEach(o => {
-    if (parseInt(o.tableNumber) === parseInt(tableNumber) &&
-        o.status !== 'Completed' && o.status !== 'Cancelled') {
+    if (parseInt(o.tableNumber) === parseInt(tableNumber) && o.status !== 'Completed' && o.status !== 'Cancelled') {
       db.ref('orders/' + o.id).update({ status: 'Completed', billedAt });
     }
   });
-  // fallback: scan Firebase directly
   db.ref('orders').once('value', snap => {
     const data = snap.val();
     if (!data) return;
     Object.values(data).forEach(o => {
-      if (parseInt(o.tableNumber) === parseInt(tableNumber) &&
-          o.status !== 'Completed' && o.status !== 'Cancelled') {
+      if (parseInt(o.tableNumber) === parseInt(tableNumber) && o.status !== 'Completed' && o.status !== 'Cancelled') {
         db.ref('orders/' + o.id).update({ status: 'Completed', billedAt });
       }
     });
@@ -667,7 +707,15 @@ function freeTable(tableNumber) {
 }
 
 /* ============================================================
-   PAYMENT METHOD SELECTOR
+   CANCEL TAKEAWAY
+   ============================================================ */
+function cancelTakeawayOrder(orderId) {
+  if (!confirm('Cancel this takeaway order?')) return;
+  db.ref('orders/' + orderId).update({ status: 'Cancelled', cancelledAt: new Date().toISOString() });
+}
+
+/* ============================================================
+   PAYMENT METHOD
    ============================================================ */
 function selectPayment(method) {
   selectedPaymentMethod = method;
@@ -677,23 +725,15 @@ function selectPayment(method) {
 }
 
 /* ============================================================
-   BILL MODAL
+   BILL MODAL — DINE-IN
    ============================================================ */
 function openBillModal(tableNumber) {
-  currentBillTableNumber = tableNumber;
-  currentBillAllOrderIds = [];
-  billItems = [];
-  selectedPaymentMethod = 'Cash';
-  document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
-  const cashEl = document.getElementById('pay-Cash');
-  if (cashEl) cashEl.classList.add('selected');
-  document.getElementById('discountInput').value = '';
-  document.getElementById('menuSearchInput').value = '';
-  document.getElementById('menuResults').style.display = 'none';
-  setDiscountMode('pct');
-  document.getElementById('billItemsBody').innerHTML = '<tr><td colspan="5" class="empty-bill-msg">Loading...</td></tr>';
-  document.getElementById('billModal').classList.add('active');
+  currentBillTableNumber  = tableNumber;
+  currentBillCustomerName = 'Table ' + tableNumber;
+  currentBillOrderType    = 'dinein';
+  _resetBillModal();
   document.getElementById('billModalSubtitle').textContent = `Table ${tableNumber}  |  Loading...`;
+  document.getElementById('billModal').classList.add('active');
 
   db.ref('orders').once('value', snap => {
     const data = snap.val();
@@ -701,9 +741,9 @@ function openBillModal(tableNumber) {
 
     const tableOrders = Object.values(data)
       .filter(o => o && o.id && parseInt(o.tableNumber) === parseInt(tableNumber) &&
+                   o.orderType !== 'takeaway' && o.type !== 'takeaway' &&
                    o.status !== 'Completed' && o.status !== 'Cancelled')
-      .sort((a, b) => (a.createdAt ? new Date(a.createdAt).getTime() : 0) -
-                      (b.createdAt ? new Date(b.createdAt).getTime() : 0));
+      .sort((a, b) => (a.createdAt ? new Date(a.createdAt).getTime() : 0) - (b.createdAt ? new Date(b.createdAt).getTime() : 0));
 
     currentBillAllOrderIds = tableOrders.map(o => o.id).filter(Boolean);
     const diet = tableOrders.length ? (tableOrders[0].diet || 'Regular') : 'Regular';
@@ -723,16 +763,56 @@ function openBillModal(tableNumber) {
     billItems = Object.values(mergedMap);
     renderBillItems();
     recalcBill();
-  }, err => {
-    document.getElementById('billItemsBody').innerHTML =
-      `<tr><td colspan="5" class="empty-bill-msg" style="color:#ef4444;">Error: ${err.message}</td></tr>`;
   });
+}
+
+/* ============================================================
+   BILL MODAL — TAKEAWAY
+   ============================================================ */
+function openTakeawayBillModal(orderId, customerName) {
+  currentBillTableNumber  = null;
+  currentBillCustomerName = customerName || 'Guest';
+  currentBillOrderType    = 'takeaway';
+  currentBillAllOrderIds  = [orderId];
+  _resetBillModal();
+  document.getElementById('billModalSubtitle').textContent = `🛍️ Takeaway  |  ${currentBillCustomerName}`;
+  document.getElementById('billModal').classList.add('active');
+
+  db.ref('orders/' + orderId).once('value', snap => {
+    const order = snap.val();
+    if (!order) { renderBillItems(); recalcBill(); return; }
+
+    const items = Array.isArray(order.items) ? order.items : [];
+    billItems = items.map(i => ({
+      id:    i.id || ('item_' + Date.now()),
+      name:  i.name,
+      qty:   parseInt(i.qty) || 1,
+      price: parseFloat(i.price) || 0
+    }));
+    renderBillItems();
+    recalcBill();
+  });
+}
+
+function _resetBillModal() {
+  billItems = [];
+  selectedPaymentMethod = 'Cash';
+  document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+  const cashEl = document.getElementById('pay-Cash');
+  if (cashEl) cashEl.classList.add('selected');
+  document.getElementById('discountInput').value = '';
+  document.getElementById('menuSearchInput').value = '';
+  document.getElementById('menuResults').style.display = 'none';
+  document.getElementById('billItemsBody').innerHTML = '<tr><td colspan="5" class="empty-bill-msg">Loading...</td></tr>';
+  setDiscountMode('pct');
 }
 
 function closeBillModal() {
   document.getElementById('billModal').classList.remove('active');
-  currentBillTableNumber = null;
-  currentBillAllOrderIds = [];
+  currentBillTableNumber  = null;
+  currentBillCustomerName = '';
+  currentBillOrderType    = 'dinein';
+  currentBillAllOrderIds  = [];
   billItems = [];
 }
 
@@ -756,10 +836,10 @@ function renderBillItems() {
     </tr>`).join('');
 }
 
-function updateItemName(idx, val) { billItems[idx].name = val; }
+function updateItemName(idx, val)  { billItems[idx].name  = val; }
 function updateItemPrice(idx, val) { billItems[idx].price = parseFloat(val) || 0; renderBillItems(); recalcBill(); }
-function updateBillQty(idx, delta) { billItems[idx].qty = Math.max(1, billItems[idx].qty + delta); renderBillItems(); recalcBill(); }
-function removeBillItem(idx) { billItems.splice(idx, 1); renderBillItems(); recalcBill(); }
+function updateBillQty(idx, delta) { billItems[idx].qty   = Math.max(1, billItems[idx].qty + delta); renderBillItems(); recalcBill(); }
+function removeBillItem(idx)       { billItems.splice(idx, 1); renderBillItems(); recalcBill(); }
 
 function searchMenuItems() {
   const q = document.getElementById('menuSearchInput').value.toLowerCase().trim();
@@ -786,7 +866,7 @@ function addMenuItemToBill(id, name, price) {
 }
 
 document.addEventListener('click', e => {
-  if (!e.target.closest('.add-items-section') && !e.target.closest('#menuSearchInput'))
+  if (!e.target.closest('#menuSearchInput') && !e.target.closest('#menuResults'))
     document.getElementById('menuResults').style.display = 'none';
 });
 
@@ -799,14 +879,14 @@ function setDiscountMode(mode) {
 
 function recalcBill() {
   const subtotal = billItems.reduce((s, i) => s + i.price * i.qty, 0);
-  const discVal = parseFloat(document.getElementById('discountInput').value) || 0;
-  const discAmt = discountMode === 'pct'
+  const discVal  = parseFloat(document.getElementById('discountInput').value) || 0;
+  const discAmt  = discountMode === 'pct'
     ? Math.min(subtotal, subtotal * discVal / 100)
     : Math.min(subtotal, discVal);
   const grand = subtotal - discAmt;
-  document.getElementById('billSubtotal').textContent = `₹${subtotal.toFixed(2)}`;
-  document.getElementById('discountAmount').textContent = `-₹${discAmt.toFixed(2)}`;
-  document.getElementById('billGrandTotal').textContent = `₹${grand.toFixed(2)}`;
+  document.getElementById('billSubtotal').textContent    = `₹${subtotal.toFixed(2)}`;
+  document.getElementById('discountAmount').textContent  = `-₹${discAmt.toFixed(2)}`;
+  document.getElementById('billGrandTotal').textContent  = `₹${grand.toFixed(2)}`;
 }
 
 function saveAndClose() {
@@ -827,17 +907,23 @@ function saveAndClose() {
    ============================================================ */
 function printBill() {
   const subtotal = billItems.reduce((s, i) => s + i.price * i.qty, 0);
-  const discVal = parseFloat(document.getElementById('discountInput').value) || 0;
-  const discAmt = discountMode === 'pct'
+  const discVal  = parseFloat(document.getElementById('discountInput').value) || 0;
+  const discAmt  = discountMode === 'pct'
     ? Math.min(subtotal, subtotal * discVal / 100)
     : Math.min(subtotal, discVal);
   const grand = subtotal - discAmt;
   const now = new Date();
-  const dateStr = now.toLocaleDateString('en-IN');
-  const timeStr = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
-  const orderNo = currentBillAllOrderIds.length ? currentBillAllOrderIds[0].replace('ORD','') : Date.now();
+  const dateStr  = now.toLocaleDateString('en-IN');
+  const timeStr  = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+  const orderNo  = currentBillAllOrderIds.length ? currentBillAllOrderIds[0].replace('ORD','') : Date.now();
+  const payIcon  = PAYMENT_ICONS[selectedPaymentMethod] || '💰';
+  const isTW     = currentBillOrderType === 'takeaway';
   const discLabel = discAmt > 0 ? (discountMode === 'pct' ? `Discount (${discVal}%)` : 'Discount') : '';
-  const payIcon = PAYMENT_ICONS[selectedPaymentMethod] || '💰';
+
+  const typeLineHTML = isTW
+    ? `<div class="print-info-row"><span>Type:</span><span>🛍️ Takeaway</span></div>
+       <div class="print-info-row"><span>Customer:</span><span>${currentBillCustomerName}</span></div>`
+    : `<div class="print-info-row"><span>Table:</span><span>${currentBillTableNumber}</span></div>`;
 
   const itemsHTML = billItems.map(i =>
     `<div class="print-item-row">
@@ -857,7 +943,7 @@ function printBill() {
     </div>
     <hr class="print-divider">
     <div class="print-info-row"><span>Order No:</span><span>#${orderNo}</span></div>
-    <div class="print-info-row"><span>Table:</span><span>${currentBillTableNumber || '—'}</span></div>
+    ${typeLineHTML}
     <div class="print-info-row"><span>Date:</span><span>${dateStr}</span></div>
     <div class="print-info-row"><span>Time:</span><span>${timeStr}</span></div>
     <hr class="print-divider">
@@ -882,10 +968,9 @@ function printBill() {
     <div class="print-footer">Visit us again • EMERALD Restaurant<br>*This is your bill receipt*</div>
   `;
 
-  // Mark all rounds Completed + save payment method
+  // Mark orders as Completed
   const billedAt = new Date().toISOString();
-  const idsToComplete = currentBillAllOrderIds.length > 0 ? currentBillAllOrderIds : [];
-  idsToComplete.forEach((oid, idx) => {
+  currentBillAllOrderIds.forEach((oid, idx) => {
     if (!oid) return;
     const upd = { status: 'Completed', billedAt, paymentMethod: selectedPaymentMethod };
     if (idx === 0) {
@@ -894,9 +979,9 @@ function printBill() {
         total:        subtotal,
         grandTotal:   grand,
         discount:     discAmt,
-        customerName: 'Table ' + currentBillTableNumber,
-        tableNumber:  currentBillTableNumber,
-        orderType:    'dinein'
+        customerName: currentBillCustomerName,
+        tableNumber:  isTW ? null : currentBillTableNumber,
+        orderType:    currentBillOrderType
       });
     }
     db.ref('orders/' + oid).update(upd).catch(e => console.error(e));
@@ -923,25 +1008,25 @@ function switchTab(name) {
 (function initDates() {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('histFrom').value = today;
-  document.getElementById('histTo').value = today;
+  document.getElementById('histTo').value   = today;
 })();
 
 function setCurrentMonth() {
   const now = new Date();
   const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2,'0');
   document.getElementById('histFrom').value = `${y}-${m}-01`;
-  document.getElementById('histTo').value = now.toISOString().split('T')[0];
+  document.getElementById('histTo').value   = now.toISOString().split('T')[0];
   applyHistoryFilter();
 }
 function setToday() {
   const t = new Date().toISOString().split('T')[0];
   document.getElementById('histFrom').value = t;
-  document.getElementById('histTo').value = t;
+  document.getElementById('histTo').value   = t;
   applyHistoryFilter();
 }
 function clearFilter() {
   document.getElementById('histFrom').value = '';
-  document.getElementById('histTo').value = '';
+  document.getElementById('histTo').value   = '';
   applyHistoryFilter();
 }
 
@@ -989,7 +1074,7 @@ function renderHistoryStats() {
 }
 
 function renderHistoryTable() {
-  const tbody = document.getElementById('historyBody');
+  const tbody      = document.getElementById('historyBody');
   const pagination = document.getElementById('histPagination');
 
   if (!filteredHistory.length) {
@@ -999,8 +1084,8 @@ function renderHistoryTable() {
   }
 
   const totalPages = Math.ceil(filteredHistory.length / HIST_PAGE_SIZE);
-  const start = (histPage - 1) * HIST_PAGE_SIZE;
-  const pageData = filteredHistory.slice(start, start + HIST_PAGE_SIZE);
+  const start      = (histPage - 1) * HIST_PAGE_SIZE;
+  const pageData   = filteredHistory.slice(start, start + HIST_PAGE_SIZE);
 
   tbody.innerHTML = pageData.map((order, idx) => {
     const raw     = order.billedAt || order.createdAt;
@@ -1016,7 +1101,7 @@ function renderHistoryTable() {
     const items = Array.isArray(order.items) ? order.items : [];
     const total = order.grandTotal || order.total || 0;
     const oid = order.id || '';
-    const pm = order.paymentMethod || '—';
+    const pm  = order.paymentMethod || '—';
     const pmIcon = PAYMENT_ICONS[pm] || '💰';
 
     return `
@@ -1069,6 +1154,7 @@ function renderOrderDetail(order) {
         <span>Diet: ${order.diet || 'Regular'}</span>
         <span>People: ${order.people || 1}</span>
         <span>${pmIcon} ${pm}</span>
+        ${order.orderType === 'takeaway' ? '<span style="color:#60a5fa;">🛍️ Takeaway</span>' : ''}
       </div>
       ${items.map(i => `
         <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#d1d5db;border-bottom:1px solid rgba(255,255,255,0.05);">
@@ -1111,12 +1197,10 @@ function ensureHistoryLoaded(cb) {
 function exportExcel() {
   ensureHistoryLoaded(rows => {
     if (!rows.length) { alert('No data to export.'); return; }
-    const wsData = [
-      ['#','Date','Time','Order ID','Customer','Order Type','Table No','Payment Method','Items Count','Item Details','Subtotal (₹)','Discount (₹)','Grand Total (₹)','Status','Diet']
-    ];
+    const wsData = [['#','Date','Time','Order ID','Customer','Order Type','Table No','Payment Method','Items Count','Item Details','Subtotal (₹)','Discount (₹)','Grand Total (₹)','Status','Diet']];
     rows.forEach((o, idx) => {
       const raw = o.billedAt || o.createdAt;
-      const d = raw ? new Date(raw) : null;
+      const d   = raw ? new Date(raw) : null;
       const items = Array.isArray(o.items) ? o.items : [];
       const sub  = items.reduce((s, i) => s + parseFloat(i.price) * parseInt(i.qty), 0);
       const disc = o.discount || 0;
@@ -1154,8 +1238,8 @@ function exportPDF() {
     if (!rows.length) { alert('No data to export.'); return; }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });
-    const from = document.getElementById('histFrom').value;
-    const to   = document.getElementById('histTo').value;
+    const from  = document.getElementById('histFrom').value;
+    const to    = document.getElementById('histTo').value;
     const label = (from && to) ? `${from} to ${to}` : 'All Time';
     doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(40,40,40);
     doc.text('EMERALD', 14, 18);
@@ -1177,7 +1261,7 @@ function exportPDF() {
       head:[['#','Date/Time','Customer','Type','Table','Payment','Items','Subtotal','Discount','Total','Status']],
       body: rows.map((o, idx) => {
         const raw = o.billedAt || o.createdAt;
-        const d = raw ? new Date(raw) : null;
+        const d   = raw ? new Date(raw) : null;
         const items = Array.isArray(o.items) ? o.items : [];
         const sub  = items.reduce((s, i) => s + parseFloat(i.price) * parseInt(i.qty), 0);
         const disc = o.discount || 0;
