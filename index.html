@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>EMERALD – QR Code Generator</title>
+<title>EMERALD – Table QR Codes</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- QR Code library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root {
@@ -18,189 +19,366 @@
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family:'Inter',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  padding:30px 20px 80px;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 30px 20px 60px;
 }
 
-.header { text-align:center; margin-bottom:50px; }
+/* ── HEADER ── */
+.header { text-align:center; margin-bottom: 50px; }
 .brand {
-  font-family:'Playfair Display',serif;
-  font-size:52px;
-  color:var(--yellow);
-  letter-spacing:4px;
-  text-shadow:0 4px 20px rgba(255,204,0,0.3);
-  margin-bottom:8px;
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  color: var(--yellow);
+  letter-spacing: 4px;
+  text-shadow: 0 4px 20px rgba(255,204,0,0.3);
+  margin-bottom: 8px;
 }
-.header-sub { color:var(--muted); font-size:16px; font-weight:500; }
+.header-sub { color: var(--muted); font-size: 16px; font-weight: 500; }
 
-/* URL bar */
+/* ── BASE URL SETTER ── */
 .url-bar {
-  max-width:700px; margin:0 auto 40px;
-  background:var(--card); border-radius:16px; padding:24px;
-  border:1px solid var(--border);
+  max-width: 700px;
+  margin: 0 auto 50px;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
 }
-.url-bar label { display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:10px; }
-.url-input-row { display:flex; gap:10px; }
+.url-bar label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.url-input-row { display: flex; gap: 10px; }
 .url-input {
-  flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
-  color:var(--text); padding:12px 16px; border-radius:10px; font-size:14px;
-  font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s;
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text);
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
 }
-.url-input:focus { border-color:var(--yellow); }
-.url-input::placeholder { color:var(--muted); }
+.url-input:focus { border-color: var(--yellow); }
+.url-input::placeholder { color: var(--muted); }
 .gen-btn {
-  padding:12px 24px; background:var(--yellow); color:#111; border:none;
-  border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap;
+  padding: 12px 24px;
+  background: var(--yellow);
+  color: #111;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
 }
-.gen-btn:hover { background:var(--yellow-dark); color:#fff; }
-.url-hint { font-size:12px; color:var(--muted); margin-top:8px; }
+.gen-btn:hover { background: var(--yellow-dark); color: #fff; }
+.url-hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
 
-/* TABS */
-.tab-bar {
-  max-width:1200px; margin:0 auto 32px;
-  display:flex; gap:8px;
-  background:rgba(255,255,255,0.05);
-  border-radius:14px; padding:6px;
-}
-.tab-pill {
-  flex:1; padding:12px 20px; border:none; border-radius:10px;
-  font-family:'Inter',sans-serif; font-size:15px; font-weight:600;
-  cursor:pointer; transition:all 0.25s ease;
-  color:var(--muted); background:transparent;
-  display:flex; align-items:center; justify-content:center; gap:8px;
-}
-.tab-pill.active { background:var(--yellow); color:#111; box-shadow:0 4px 12px rgba(255,204,0,0.3); }
-.tab-pill:not(.active):hover { background:rgba(255,255,255,0.08); color:var(--text); }
-.tab-content { display:none; }
-.tab-content.active { display:block; }
-
-/* Top actions */
+/* ── PRINT ALL BUTTON ── */
 .top-actions {
-  max-width:1200px; margin:0 auto 24px;
-  display:flex; justify-content:flex-end; gap:12px; flex-wrap:wrap;
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }
-.action-btn {
-  padding:11px 22px;
-  background:transparent;
-  border:1.5px solid var(--yellow);
-  color:var(--yellow);
-  border-radius:10px; font-size:14px; font-weight:700; cursor:pointer;
-  transition:all 0.2s; display:flex; align-items:center; gap:8px;
+.print-all-btn {
+  padding: 12px 28px;
+  background: transparent;
+  border: 1.5px solid var(--yellow);
+  color: var(--yellow);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.action-btn:hover { background:rgba(255,204,0,0.1); }
-.action-btn svg { width:16px; height:16px; }
+.print-all-btn:hover { background: rgba(255,204,0,0.1); }
+.print-all-btn svg { width:16px; height:16px; }
 
-/* TABLE GRID */
+/* ── TABLE GRID ── */
 .tables-grid {
-  max-width:1200px; margin:0 auto;
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
 }
+
 .table-qr-card {
-  background:var(--card); border-radius:16px; border:1px solid var(--border);
-  overflow:hidden; transition:transform 0.2s, box-shadow 0.2s;
+  background: var(--card);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.table-qr-card:hover { transform:translateY(-4px); box-shadow:0 12px 30px rgba(0,0,0,0.4); border-color:rgba(255,204,0,0.5); }
+.table-qr-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  border-color: rgba(255,204,0,0.5);
+}
+
 .card-top {
-  background:linear-gradient(135deg,#1a2744 0%,#1e293b 100%);
-  padding:18px 18px 12px; text-align:center;
+  background: linear-gradient(135deg, #1a2744 0%, #1e293b 100%);
+  padding: 18px 18px 12px;
+  text-align: center;
 }
-.table-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:4px; }
-.table-num { font-family:'Playfair Display',serif; font-size:38px; color:var(--yellow); line-height:1; }
-.qr-wrap { padding:18px; display:flex; justify-content:center; align-items:center; background:#fff; }
-/* qrcodejs renders both a canvas AND an img — keep only the img, hide the canvas */
-.qr-wrap canvas { display:none !important; }
-.qr-wrap img { display:block; }
-.card-bottom { padding:14px 18px; display:flex; gap:8px; }
+.table-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.table-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 38px;
+  color: var(--yellow);
+  line-height: 1;
+}
+
+.qr-wrap {
+  padding: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+}
+.qr-wrap canvas, .qr-wrap img { display: block; }
+
+.card-bottom {
+  padding: 14px 18px;
+  display: flex;
+  gap: 8px;
+}
 .card-btn {
-  flex:1; padding:9px 0; border:none; border-radius:8px;
-  font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s;
-  display:flex; align-items:center; justify-content:center; gap:5px;
+  flex: 1;
+  padding: 9px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 .card-btn svg { width:13px; height:13px; flex-shrink:0; }
-.btn-print { background:rgba(255,204,0,0.12); color:var(--yellow); border:1px solid rgba(255,204,0,0.3); }
-.btn-print:hover { background:rgba(255,204,0,0.2); }
-.btn-open { background:rgba(255,255,255,0.06); color:var(--muted); border:1px solid rgba(255,255,255,0.08); }
-.btn-open:hover { color:var(--text); background:rgba(255,255,255,0.1); }
+.btn-print {
+  background: rgba(255,204,0,0.12);
+  color: var(--yellow);
+  border: 1px solid rgba(255,204,0,0.3);
+}
+.btn-print:hover { background: rgba(255,204,0,0.2); }
+.btn-open {
+  background: rgba(255,255,255,0.06);
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.btn-open:hover { color: var(--text); background: rgba(255,255,255,0.1); }
 
-/* TAKEAWAY SECTION */
-.takeaway-box {
-  max-width:700px; margin:0 auto 40px;
-  background:var(--card); border-radius:16px; padding:28px;
-  border:1px solid rgba(59,130,246,0.3);
-}
-.takeaway-box h3 {
-  font-size:18px; font-weight:700; color:var(--text); margin-bottom:6px;
-  display:flex; align-items:center; gap:10px;
-}
-.takeaway-desc { font-size:13px; color:var(--muted); margin-bottom:20px; }
-.takeaway-input-row { display:flex; gap:10px; margin-bottom:16px; }
-.name-input {
-  flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
-  color:var(--text); padding:12px 16px; border-radius:10px; font-size:14px;
-  font-family:'Inter',sans-serif; outline:none; transition:border-color 0.2s;
-}
-.name-input:focus { border-color:#3b82f6; }
-.name-input::placeholder { color:var(--muted); }
-.gen-takeaway-btn {
-  padding:12px 24px; background:#3b82f6; color:#fff; border:none;
-  border-radius:10px; font-size:14px; font-weight:700; cursor:pointer;
-}
-.gen-takeaway-btn:hover { background:#2563eb; }
-
-.takeaway-qr-result {
-  display:none; text-align:center; padding:20px;
-  background:rgba(59,130,246,0.06); border-radius:12px;
-  border:1px solid rgba(59,130,246,0.2);
-}
-.takeaway-qr-result h4 { font-size:16px; color:#60a5fa; margin-bottom:4px; }
-.takeaway-qr-result p { font-size:12px; color:var(--muted); margin-bottom:16px; }
-.takeaway-qr-wrap { background:#fff; border-radius:12px; padding:16px; display:inline-block; margin-bottom:16px; }
-.takeaway-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-.tw-btn {
-  padding:10px 20px; border-radius:8px; font-size:13px; font-weight:700;
-  cursor:pointer; border:none; display:flex; align-items:center; gap:6px;
-}
-.tw-btn.print { background:var(--yellow); color:#111; }
-.tw-btn.print:hover { background:var(--yellow-dark); }
-.tw-btn.open { background:rgba(255,255,255,0.08); color:var(--text); border:1px solid rgba(255,255,255,0.12); }
-.tw-btn.open:hover { background:rgba(255,255,255,0.14); }
-
-/* PRINT STYLES */
+/* ── PRINT STYLES ── */
 @media print {
-  body > *                { display:none !important; }
-  #print-sheet            { display:block !important; }
+  body > *                { display: none !important; }
+  #print-sheet            { display: block !important; }
 }
-#print-sheet { display:none; }
+
+#print-sheet {
+  display: none;
+}
 
 @media print {
   #print-sheet {
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:0; padding:0; background:white;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    padding: 0;
+    background: white;
   }
   .print-cell {
-    border:1px solid #ddd; padding:20px 16px;
-    text-align:center; page-break-inside:avoid;
+    border: 1px solid #ddd;
+    padding: 20px 16px;
+    text-align: center;
+    page-break-inside: avoid;
   }
-  .print-cell-brand { font-family:'Playfair Display',serif; font-size:22px; letter-spacing:4px; font-weight:700; color:#111; margin-bottom:4px; }
-  .print-cell-table { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#666; margin-bottom:10px; }
-  .print-cell-num { font-size:36px; font-weight:900; color:#111; margin-bottom:12px; }
-  .print-cell-name { font-size:15px; font-weight:700; color:#333; margin-bottom:8px; letter-spacing:0.5px; }
-  .print-cell-qr { margin:0 auto 10px; }
-  .print-cell-url { font-size:9px; color:#999; word-break:break-all; }
-  .print-cell-type { display:inline-block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; padding:3px 10px; border-radius:10px; margin-bottom:8px; }
-  .print-cell-type.table { background:#fff8e1; color:#7c5800; border:1px solid #ffcc00; }
-  .print-cell-type.takeaway { background:#eff6ff; color:#1d4ed8; border:1px solid #3b82f6; }
+  .print-cell-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    letter-spacing: 4px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+  }
+  .print-cell-table {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #666;
+    margin-bottom: 12px;
+  }
+  .print-cell-num {
+    font-size: 36px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 12px;
+  }
+  .print-cell-qr { margin: 0 auto 10px; }
+  .print-cell-url {
+    font-size: 9px;
+    color: #999;
+    word-break: break-all;
+  }
 }
 
-@media (max-width:600px) {
-  .brand { font-size:36px; }
-  .tables-grid { grid-template-columns:repeat(2,1fr); gap:12px; }
-  .url-input-row { flex-direction:column; }
-  .tab-pill { font-size:13px; padding:10px 12px; }
+/* ── TAKEAWAY SECTION ── */
+.section-divider {
+  max-width: 1200px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.section-divider-line { flex: 1; height: 1px; background: var(--border); }
+.section-divider-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.takeaway-card {
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  background: var(--card);
+  border-radius: 20px;
+  border: 1px solid rgba(255,204,0,0.35);
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+.takeaway-info {
+  flex: 1;
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.takeaway-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,204,0,0.12);
+  border: 1px solid rgba(255,204,0,0.35);
+  color: var(--yellow);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+  width: fit-content;
+}
+.takeaway-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.takeaway-sub {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.takeaway-url-tag {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  color: var(--muted);
+  font-family: monospace;
+  word-break: break-all;
+  margin-bottom: 18px;
+}
+.takeaway-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.takeaway-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.takeaway-btn svg { width: 14px; height: 14px; }
+.tbtn-print {
+  background: rgba(255,204,0,0.12);
+  color: var(--yellow);
+  border: 1px solid rgba(255,204,0,0.35);
+}
+.tbtn-print:hover { background: rgba(255,204,0,0.22); }
+.tbtn-test {
+  background: rgba(255,255,255,0.06);
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.tbtn-test:hover { color: var(--text); background: rgba(255,255,255,0.1); }
+
+.takeaway-qr-panel {
+  background: linear-gradient(135deg, #1a2744 0%, #1e293b 100%);
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-left: 1px solid rgba(255,204,0,0.15);
+}
+.takeaway-qr-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+.takeaway-qr-wrap {
+  background: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .takeaway-card { flex-direction: column; }
+  .takeaway-qr-panel { border-left: none; border-top: 1px solid rgba(255,204,0,0.15); }
 }
 </style>
 </head>
@@ -208,93 +386,124 @@ body {
 
 <div class="header">
   <div class="brand">EMERALD</div>
-  <div class="header-sub">QR Code Generator · 23 Tables + Takeaway</div>
+  <div class="header-sub">Table QR Code Generator · 23 Tables</div>
 </div>
 
 <!-- URL Input -->
 <div class="url-bar">
-  <label>Your Menu URL</label>
+  <label>Your Menu URL (where menu.html is hosted)</label>
   <div class="url-input-row">
-    <input type="text" class="url-input" id="baseUrl" placeholder="e.g. https://yourdomain.com/menu.html">
+    <input type="text" class="url-input" id="baseUrl"
+      placeholder="e.g. https://yourdomain.com/menu.html"
+      value="">
     <button class="gen-btn" onclick="generateAll()">Generate QRs</button>
   </div>
-  <div class="url-hint">💡 Each table QR links to <code>menu.html?table=N</code> · Takeaway QRs include the customer name</div>
-</div>
-
-<!-- Tabs -->
-<div class="tab-bar">
-  <button class="tab-pill active" id="pill-tables" onclick="showTab('tables')">🪑 Table QR Codes</button>
-  <button class="tab-pill" id="pill-takeaway" onclick="showTab('takeaway')">🛍️ Takeaway QR</button>
-</div>
-
-<!-- TABLE TAB -->
-<div class="tab-content active" id="tab-tables">
-  <div class="top-actions">
-    <button class="action-btn" onclick="printAll()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      Print All Table QRs
-    </button>
-  </div>
-  <div class="tables-grid" id="tablesGrid"></div>
-</div>
-
-<!-- TAKEAWAY TAB -->
-<div class="tab-content" id="tab-takeaway">
-  <div class="takeaway-box">
-    <h3>🛍️ Generate Takeaway QR</h3>
-    <p class="takeaway-desc">Enter the customer's name to generate a personalised takeaway QR code. The customer scans it to place their order which goes directly to the kitchen tagged as Takeaway.</p>
-    <div class="takeaway-input-row">
-      <input type="text" class="name-input" id="customerName" placeholder="Customer name (e.g. Rajesh Patel)" maxlength="40" oninput="clearTakeawayResult()">
-      <button class="gen-takeaway-btn" onclick="generateTakeaway()">Generate QR</button>
-    </div>
-    <div class="takeaway-qr-result" id="takeawayResult">
-      <h4 id="takeawayTitle">QR for —</h4>
-      <p id="takeawaySubtitle">Scan to place a takeaway order</p>
-      <div class="takeaway-qr-wrap"><div id="takeawayQR"></div></div>
-      <div class="takeaway-btns">
-        <button class="tw-btn print" onclick="printTakeaway()">🖨️ Print QR</button>
-        <button class="tw-btn open" onclick="testTakeaway()">🔗 Test Link</button>
-      </div>
-    </div>
+  <div class="url-hint">
+    💡 Each QR will link to <code>menu.html?table=1</code>, <code>menu.html?table=2</code>, etc.
+    If running locally, use <code>file:///path/to/menu.html</code> or your server URL.
   </div>
 </div>
 
+<div class="top-actions">
+  <button class="print-all-btn" onclick="printAll()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+    </svg>
+    Print All QR Codes
+  </button>
+</div>
+
+<!-- ── TAKEAWAY QR ── -->
+<div class="section-divider">
+  <div class="section-divider-line"></div>
+  <div class="section-divider-label">🛍️ Takeaway</div>
+  <div class="section-divider-line"></div>
+</div>
+
+<div class="takeaway-card" id="takeaway-card">
+  <div class="takeaway-info">
+    <div class="takeaway-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Takeaway Counter
+    </div>
+    <div class="takeaway-title">Takeaway QR Code</div>
+    <div class="takeaway-sub">Place this QR at your takeaway counter or entrance. Customers scan it, enter their name, and order directly from their phone for pickup.</div>
+    <div class="takeaway-url-tag" id="takeaway-url-display">Generate QRs above to see the takeaway URL</div>
+    <div class="takeaway-actions">
+      <button class="takeaway-btn tbtn-print" onclick="printTakeaway()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print Takeaway QR
+      </button>
+      <button class="takeaway-btn tbtn-test" id="takeaway-test-btn" onclick="testTakeaway()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Test Link
+      </button>
+    </div>
+  </div>
+  <div class="takeaway-qr-panel">
+    <div class="takeaway-qr-label">Scan to Order</div>
+    <div class="takeaway-qr-wrap" id="takeaway-qr-wrap">
+      <div style="width:160px;height:160px;display:flex;align-items:center;justify-content:center;color:#999;font-size:12px;text-align:center;padding:10px;">Generate QRs first</div>
+    </div>
+    <div class="takeaway-qr-label" style="color:var(--yellow)">🛍️ Takeaway</div>
+  </div>
+</div>
+
+<!-- ── DINE-IN TABLES ── -->
+<div class="section-divider">
+  <div class="section-divider-line"></div>
+  <div class="section-divider-label">🪑 Dine-In Tables</div>
+  <div class="section-divider-line"></div>
+</div>
+
+<div class="tables-grid" id="tablesGrid"></div>
+
+<!-- Hidden print sheet populated before window.print() -->
 <div id="print-sheet"></div>
 
 <script>
 const TOTAL_TABLES = 23;
 let currentBaseUrl = '';
-let currentTakeawayUrl = '';
-let currentTakeawayName = '';
 
 /* ── Auto-detect URL on load ── */
 window.addEventListener('DOMContentLoaded', () => {
-  const href = window.location.href;
-  let auto = href.replace('index.html','menu.html').split('?')[0];
-  if (!auto.endsWith('menu.html')) auto = auto.replace(/\/?$/, '/menu.html');
-  document.getElementById('baseUrl').value = auto;
+  const auto = window.location.href.replace('index.html', 'menu.html').split('?')[0];
+  document.getElementById('baseUrl').value = auto.endsWith('menu.html') ? auto : auto.replace(/\/?$/, '/menu.html');
   generateAll();
 });
 
-/* ── Tab switching ── */
-function showTab(name) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-pill').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  document.getElementById('pill-' + name).classList.add('active');
-}
-
-/* ── Generate all table QRs ── */
+/* ── Generate all QR cards ── */
 function generateAll() {
   currentBaseUrl = document.getElementById('baseUrl').value.trim();
   if (!currentBaseUrl) { alert('Please enter the menu URL first.'); return; }
-  if (!currentBaseUrl.includes('menu.html')) { alert('URL should point to menu.html'); return; }
+  if (!currentBaseUrl.includes('menu.html')) {
+    alert('URL should point to menu.html');
+    return;
+  }
 
+  // ── Generate Takeaway QR ──
+  const takeawayUrl = currentBaseUrl + '?type=takeaway';
+  document.getElementById('takeaway-url-display').textContent = takeawayUrl;
+  document.getElementById('takeaway-test-btn').onclick = () => window.open(takeawayUrl, '_blank');
+
+  const takeawayWrap = document.getElementById('takeaway-qr-wrap');
+  takeawayWrap.innerHTML = '';
+  new QRCode(takeawayWrap, {
+    text: takeawayUrl,
+    width: 160,
+    height: 160,
+    colorDark: '#000000',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  // ── Generate Dine-In QRs ──
   const grid = document.getElementById('tablesGrid');
   grid.innerHTML = '';
 
   for (let t = 1; t <= TOTAL_TABLES; t++) {
     const url = currentBaseUrl + '?table=' + t;
+
     const card = document.createElement('div');
     card.className = 'table-qr-card';
     card.id = 'card-' + t;
@@ -313,111 +522,91 @@ function generateAll() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           Test
         </button>
-      </div>`;
+      </div>
+    `;
     grid.appendChild(card);
+
     new QRCode(document.getElementById('qr-' + t), {
-      text: url, width: 160, height: 160,
-      colorDark: '#000000', colorLight: '#ffffff',
+      text: url,
+      width: 160,
+      height: 160,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
       correctLevel: QRCode.CorrectLevel.H
     });
   }
 }
 
-/* ── Takeaway QR ── */
-function clearTakeawayResult() {
-  document.getElementById('takeawayResult').style.display = 'none';
-}
-
-function generateTakeaway() {
-  currentBaseUrl = document.getElementById('baseUrl').value.trim();
-  if (!currentBaseUrl) { alert('Please enter the menu URL first.'); return; }
-  if (!currentBaseUrl.includes('menu.html')) { alert('URL should point to menu.html'); return; }
-
-  const rawName = document.getElementById('customerName').value.trim();
-  if (!rawName) { alert('Please enter the customer name.'); return; }
-
-  currentTakeawayName = rawName;
-  // Encode name as URL param, mark as takeaway
-  const encodedName = encodeURIComponent(rawName);
-  currentTakeawayUrl = currentBaseUrl + '?type=takeaway&name=' + encodedName;
-
-  // Clear previous QR
-  const qrDiv = document.getElementById('takeawayQR');
-  qrDiv.innerHTML = '';
-
-  new QRCode(qrDiv, {
-    text: currentTakeawayUrl,
-    width: 180, height: 180,
-    colorDark: '#1d4ed8', colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.H
-  });
-
-  document.getElementById('takeawayTitle').textContent = 'QR for ' + rawName;
-  document.getElementById('takeawaySubtitle').textContent = 'Scan to place a takeaway order · ' + rawName;
-  document.getElementById('takeawayResult').style.display = 'block';
-}
-
-function testTakeaway() {
-  if (currentTakeawayUrl) window.open(currentTakeawayUrl, '_blank');
-}
-
+/* ── Print Takeaway QR ── */
 function printTakeaway() {
-  if (!currentTakeawayUrl) return;
-  const qrEl = document.getElementById('takeawayQR');
+  if (!currentBaseUrl) { alert('Generate QR codes first.'); return; }
+  const url = currentBaseUrl + '?type=takeaway';
+  const qrEl = document.getElementById('takeaway-qr-wrap');
   const img = qrEl.querySelector('img') || qrEl.querySelector('canvas');
   const qrSrc = img ? (img.tagName === 'CANVAS' ? img.toDataURL() : img.src) : '';
 
-  document.getElementById('print-sheet').innerHTML = `
-    <div class="print-cell" style="grid-column:1/-1; max-width:300px; margin:0 auto;">
+  const sheet = document.getElementById('print-sheet');
+  sheet.innerHTML = `
+    <div class="print-cell" style="grid-column:1/-1; max-width:280px; margin:0 auto;">
       <div class="print-cell-brand">EMERALD</div>
-      <span class="print-cell-type takeaway">Takeaway</span>
-      <div class="print-cell-table">Scan to Order</div>
-      <div class="print-cell-name">${currentTakeawayName}</div>
+      <div class="print-cell-table">Scan to Order – Takeaway</div>
+      <div class="print-cell-num">🛍️ Takeaway</div>
       <div class="print-cell-qr"><img src="${qrSrc}" width="200" height="200" style="display:block;margin:0 auto;"></div>
-      <div class="print-cell-url">${currentTakeawayUrl}</div>
-    </div>`;
+      <div class="print-cell-url">${url}</div>
+    </div>
+  `;
   window.print();
 }
 
-/* ── Print single table card ── */
+function testTakeaway() {
+  if (!currentBaseUrl) { alert('Generate QR codes first.'); return; }
+  window.open(currentBaseUrl + '?type=takeaway', '_blank');
+}
+
+/* ── Print a single QR card ── */
 function printSingle(tableNum) {
   const url = currentBaseUrl + '?table=' + tableNum;
   const qrEl = document.getElementById('qr-' + tableNum);
-  const img = qrEl ? (qrEl.querySelector('img') || qrEl.querySelector('canvas')) : null;
+  const img = qrEl.querySelector('img') || qrEl.querySelector('canvas');
   const qrSrc = img ? (img.tagName === 'CANVAS' ? img.toDataURL() : img.src) : '';
 
-  document.getElementById('print-sheet').innerHTML = `
+  const sheet = document.getElementById('print-sheet');
+  sheet.innerHTML = `
     <div class="print-cell" style="grid-column:1/-1; max-width:280px; margin:0 auto;">
       <div class="print-cell-brand">EMERALD</div>
-      <span class="print-cell-type table">Dine In</span>
       <div class="print-cell-table">Scan to Order</div>
       <div class="print-cell-num">Table ${tableNum}</div>
       <div class="print-cell-qr"><img src="${qrSrc}" width="200" height="200" style="display:block;margin:0 auto;"></div>
       <div class="print-cell-url">${url}</div>
-    </div>`;
+    </div>
+  `;
   window.print();
 }
 
-/* ── Print ALL table QRs ── */
+/* ── Print ALL QRs (3-up layout) ── */
 function printAll() {
   if (!currentBaseUrl) { alert('Generate QR codes first.'); return; }
+
+  const sheet = document.getElementById('print-sheet');
   let cells = '';
+
   for (let t = 1; t <= TOTAL_TABLES; t++) {
     const url = currentBaseUrl + '?table=' + t;
     const qrEl = document.getElementById('qr-' + t);
     const img = qrEl ? (qrEl.querySelector('img') || qrEl.querySelector('canvas')) : null;
     const qrSrc = img ? (img.tagName === 'CANVAS' ? img.toDataURL() : img.src) : '';
+
     cells += `
       <div class="print-cell">
         <div class="print-cell-brand">EMERALD</div>
-        <span class="print-cell-type table">Dine In</span>
         <div class="print-cell-table">Scan to Order</div>
         <div class="print-cell-num">Table ${t}</div>
         <div class="print-cell-qr"><img src="${qrSrc}" width="160" height="160" style="display:block;margin:0 auto;"></div>
         <div class="print-cell-url">${url}</div>
-      </div>`;
+      </div>
+    `;
   }
-  document.getElementById('print-sheet').innerHTML = cells;
+  sheet.innerHTML = cells;
   window.print();
 }
 </script>
