@@ -161,6 +161,9 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
 .print-payment-badge { text-align: center; margin-top: 8px; font-size: 13px; font-weight: 900; letter-spacing: 1px; border: 2px solid #000; display: inline-block; padding: 4px 16px; border-radius: 20px; }
 .print-footer { text-align: center; font-size: 10px; margin-top: 12px; color: #555; }
 .print-thankyou { font-size: 14px; font-weight: 900; text-align: center; margin: 8px 0 4px; }
+.print-gst-block { margin-top: 8px; }
+.print-gst-row { font-size: 11px; color: #333; margin-bottom: 3px; font-weight: 600; }
+.print-manager-sign { font-size: 12px; font-weight: 700; color: #000; margin-top: 10px; }
 
 /* TABS */
 .tab-nav { display: flex; gap: 8px; max-width: 1200px; margin: 0 auto 32px; background: rgba(255,255,255,0.05); border-radius: 14px; padding: 6px; }
@@ -966,6 +969,13 @@ function printBill() {
     <hr class="print-divider">
     <div class="print-thankyou">Thank You! 🙏</div>
     <div class="print-footer">Visit us again • EMERALD Restaurant<br>*This is your bill receipt*</div>
+    <hr class="print-divider">
+    <div class="print-gst-block">
+      <div class="print-gst-row">GSTIN : 24AADFE5274B1ZV</div>
+      <div class="print-gst-row">HSN / SAC : 9963</div>
+      <div class="print-gst-row">FASSAI No. :10715026000591</div>
+      <div class="print-manager-sign">Manager's Sign</div>
+    </div>
   `;
 
   // Mark orders as Completed
