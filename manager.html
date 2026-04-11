@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -223,6 +224,20 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(
   .export-row { margin-left: 0; }
   .payment-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* PACKAGE CARDS */
+.pkg-card { background:rgba(255,255,255,0.04); border:2px solid rgba(255,255,255,0.08); border-radius:14px; padding:16px; cursor:pointer; transition:all 0.2s; user-select:none; }
+.pkg-card:hover { border-color:rgba(255,204,0,0.4); background:rgba(255,204,0,0.05); }
+.pkg-card.selected { border-color:var(--primary-yellow); background:rgba(255,204,0,0.12); }
+.pkg-name { font-size:14px; font-weight:800; color:var(--text-light); margin-bottom:4px; }
+.pkg-price { font-size:20px; font-weight:900; color:var(--primary-yellow); margin-bottom:6px; }
+.pkg-gst { font-size:11px; font-weight:600; color:#94a3b8; }
+.pkg-items { font-size:11px; color:#64748b; line-height:1.5; }
+.gst-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; }
+.gst-label { font-size:13px; color:#60a5fa; }
+.gst-value { font-size:13px; font-weight:600; color:#60a5fa; }
+.roundoff-label { font-size:13px; color:#f59e0b; }
+.roundoff-value { font-size:13px; font-weight:600; color:#f59e0b; }
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -259,6 +274,7 @@ const db = firebase.database();
 
 <nav class="tab-nav">
   <button class="tab-btn active" onclick="switchTab('live')" id="tab-live">🏠 Live Dashboard</button>
+  <button class="tab-btn" onclick="switchTab('manual')" id="tab-manual">✍️ Manual Bill</button>
   <button class="tab-btn" onclick="switchTab('history')" id="tab-history">📊 Bill History</button>
 </nav>
 
@@ -283,6 +299,83 @@ const db = firebase.database();
       <div id="takeaway-orders-list" class="tables-grid"></div>
     </div>
 
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-manual">
+  <div class="dashboard-container">
+    <h2 class="section-header">✍️ Manual Bill</h2>
+    <div style="background:var(--card-bg);border-radius:16px;padding:24px;margin-bottom:24px;border:1px solid rgba(255,204,0,0.15);">
+      <div class="add-items-title" style="margin-bottom:16px;">📦 Select Package</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px;">
+        <div class="pkg-card" onclick="selectPackage('pkg1')" id="pkg-pkg1"><div class="pkg-name">Package One</div><div class="pkg-price">₹290 <span class="pkg-gst">+GST</span></div><div class="pkg-items">Soup · Veg Starter · Paneer MC · Veg MC · Butter Roti/Naan×2 · Dal · Rice · Green Salad · Papad &amp; Pickle · Ice Cream · Mukhwas</div></div>
+        <div class="pkg-card" onclick="selectPackage('pkg2')" id="pkg-pkg2"><div class="pkg-name">Package Two</div><div class="pkg-price">₹345 <span class="pkg-gst">+GST</span></div><div class="pkg-items">Mocktail · Soup · Veg Starter · Paneer MC · Veg MC · Butter Roti×2 · Dal · Rice · Green Salad · Butter Milk · Papad · Sweet · Ice Cream · Mukhwas</div></div>
+        <div class="pkg-card" onclick="selectPackage('pkg3')" id="pkg-pkg3"><div class="pkg-name">Package Three</div><div class="pkg-price">₹390 <span class="pkg-gst">+GST</span></div><div class="pkg-items">Mocktail · Soup×2 · Veg Starter · Farsan · Paneer MC · Veg MC · Butter Roti×2 · Dal · Rice · Salad · Raita/Butter Milk · Papad · Sweet · Ice Cream Premium · Mukhwas · Water 200ml</div></div>
+        <div class="pkg-card" onclick="selectPackage('pkg4')" id="pkg-pkg4"><div class="pkg-name">Package Four</div><div class="pkg-price">₹460 <span class="pkg-gst">+GST</span></div><div class="pkg-items">Mocktail×2 · Soup×2 · Veg Starter · Baked Dish · Farsan · Paneer MC · Veg MC · Butter Roti×2 · Dal · Rice · Salad×2 · Raita · Papad · Sweet Premium · Ice Cream Premium · Sweet Paan · Water 200ml</div></div>
+        <div class="pkg-card" onclick="selectPackage('pkg5')" id="pkg-pkg5"><div class="pkg-name">Package Five</div><div class="pkg-price">₹540 <span class="pkg-gst">+GST</span></div><div class="pkg-items">Mocktail×2 · Soup×2 · Veg Starter · Paneer Starter · Baked Dish · Chat · Farsan · Paneer MC · Veg MC · Kofta MC · Roti×3 · Dal · Rice/Biryani · Salad×2 · Raita · Papad · Sweet×2 · Ice Cream Premium · Sweet Paan · Water 200ml</div></div>
+        <div class="pkg-card" onclick="selectPackage('guj')" id="pkg-guj"><div class="pkg-name">Gujarati Package</div><div class="pkg-price">₹315 <span class="pkg-gst">+GST</span></div><div class="pkg-items">Min 150 Pax · Mocktail · Soup · Farsan · Kothol MC · Veg MC (Gujarati) · Butter Roti×2 · Gujarati Dal · Rice/Pulao · Green Salad · Raita · Papad · Sweet · Ice Cream · Mukhwas</div></div>
+        <div class="pkg-card" onclick="selectPackage('mb1')" id="pkg-mb1"><div class="pkg-name">Morning Breakfast 1</div><div class="pkg-price">₹99 <span class="pkg-gst">+GST</span></div><div class="pkg-items">Hot Tea · Hot Coffee · Hot Snack (Mix Bhajiya/Khaman/French Fries/Poha/Samosa/Ganthiya/Fafada)</div></div>
+        <div class="pkg-card" onclick="selectPackage('mb2')" id="pkg-mb2"><div class="pkg-name">Morning Breakfast 2</div><div class="pkg-price">₹149 <span class="pkg-gst">+GST</span></div><div class="pkg-items">Hot Tea · Hot Coffee · Hot Snack · Light Snack (Bread Butter/Toast/Veg Sandwich/Cookies) · Water 200ml</div></div>
+        <div class="pkg-card" onclick="selectPackage('none')" id="pkg-none"><div class="pkg-name">➕ Custom / No Package</div><div class="pkg-price" style="color:#94a3b8;">Add items manually</div><div class="pkg-items">Search and add individual menu items below</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;padding:16px;background:rgba(255,204,0,0.06);border-radius:12px;border:1px solid rgba(255,204,0,0.2);">
+        <span style="font-size:14px;font-weight:700;color:var(--text-muted);min-width:120px;">👥 No. of People</span>
+        <button class="qty-btn" onclick="changeManualPeople(-1)" style="width:36px;height:36px;font-size:18px;">−</button>
+        <span id="manualPeopleCount" style="font-size:24px;font-weight:900;color:var(--primary-yellow);min-width:40px;text-align:center;">1</span>
+        <button class="qty-btn" onclick="changeManualPeople(1)" style="width:36px;height:36px;font-size:18px;">+</button>
+        <span id="manualPkgCalcLine" style="font-size:13px;color:#94a3b8;margin-left:8px;"></span>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div class="add-items-title">➕ Add Extra Items</div>
+        <input type="text" class="menu-search-input" id="manualMenuSearch" placeholder="Search menu items..." oninput="searchManualItems()">
+        <div class="menu-results" id="manualMenuResults"></div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div class="add-items-title">📋 Bill Items</div>
+        <table class="bill-table">
+          <thead><tr><th>Item</th><th>Qty</th><th>Rate (₹)</th><th>Amt (₹)</th><th></th></tr></thead>
+          <tbody id="manualBillBody"><tr><td colspan="5" class="empty-bill-msg">Select a package or add items above</td></tr></tbody>
+        </table>
+      </div>
+      <div class="bill-totals" style="margin-bottom:16px;">
+        <div class="total-row"><span class="total-label">Subtotal (Base)</span><span class="total-value" id="mSubtotal">₹0.00</span></div>
+        <div class="discount-row">
+          <span class="discount-label">Discount</span>
+          <div class="discount-toggle">
+            <button id="mDiscPctBtn" class="active" onclick="setManualDiscMode('pct')">%</button>
+            <button id="mDiscRupBtn" onclick="setManualDiscMode('rs')">₹</button>
+          </div>
+          <input type="number" class="discount-input" id="mDiscountInput" placeholder="0" min="0" oninput="recalcManual()">
+          <span class="total-value" id="mDiscountAmt" style="color:#ef4444;">-₹0.00</span>
+        </div>
+        <hr class="divider">
+        <div class="total-row"><span class="total-label">After Discount</span><span class="total-value" id="mAfterDiscount">₹0.00</span></div>
+        <div class="gst-row"><span class="gst-label">CGST @ 2.5%</span><span class="gst-value" id="mCGST">₹0.00</span></div>
+        <div class="gst-row"><span class="gst-label">SGST @ 2.5%</span><span class="gst-value" id="mSGST">₹0.00</span></div>
+        <div class="gst-row"><span class="roundoff-label">Round Off</span><span class="roundoff-value" id="mRoundOff">₹0.00</span></div>
+        <hr class="divider">
+        <div class="grand-total-row"><span class="grand-total-label">GRAND TOTAL</span><span class="grand-total-value" id="mGrandTotal">₹0.00</span></div>
+      </div>
+      <div class="payment-section">
+        <div class="payment-title">💳 Payment Method</div>
+        <div class="payment-grid">
+          <div class="payment-option selected" onclick="selectManualPayment('Cash')" id="mpay-Cash"><span class="pay-icon">💵</span><span class="pay-label">CASH</span></div>
+          <div class="payment-option" onclick="selectManualPayment('UPI')" id="mpay-UPI"><span class="pay-icon">📱</span><span class="pay-label">UPI</span></div>
+          <div class="payment-option" onclick="selectManualPayment('Card')" id="mpay-Card"><span class="pay-icon">💳</span><span class="pay-label">CARD</span></div>
+          <div class="payment-option" onclick="selectManualPayment('IMPS')" id="mpay-IMPS"><span class="pay-icon">🏦</span><span class="pay-label">IMPS</span></div>
+          <div class="payment-option" onclick="selectManualPayment('NEFT')" id="mpay-NEFT"><span class="pay-icon">🔁</span><span class="pay-label">NEFT</span></div>
+          <div class="payment-option" onclick="selectManualPayment('Split')" id="mpay-Split"><span class="pay-icon">✂️</span><span class="pay-label">SPLIT</span></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;margin-bottom:20px;">
+        <div class="add-items-title">👤 Customer Name (Optional)</div>
+        <input type="text" class="menu-search-input" id="manualCustomerName" placeholder="e.g. Mehta Family" style="margin-bottom:0;">
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button onclick="printManualBill()" style="flex:1;min-width:160px;padding:16px;background:var(--primary-yellow);color:#111;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">🖨️ Print Bill</button>
+        <button onclick="resetManualBill()" style="padding:16px 24px;background:rgba(255,255,255,0.08);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">🔄 Reset</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -351,6 +444,11 @@ const db = firebase.database();
           <input type="number" class="discount-input" id="discountInput" placeholder="0" min="0" oninput="recalcBill()">
           <span class="total-value" id="discountAmount" style="color:#ef4444;">-₹0.00</span>
         </div>
+        <hr class="divider">
+        <div class="total-row"><span class="total-label">After Discount</span><span class="total-value" id="billAfterDiscount">₹0.00</span></div>
+        <div class="gst-row"><span class="gst-label">CGST @ 2.5%</span><span class="gst-value" id="billCGST">₹0.00</span></div>
+        <div class="gst-row"><span class="gst-label">SGST @ 2.5%</span><span class="gst-value" id="billSGST">₹0.00</span></div>
+        <div class="gst-row"><span class="roundoff-label">Round Off</span><span class="roundoff-value" id="billRoundOff">₹0.00</span></div>
         <hr class="divider">
         <div class="grand-total-row">
           <span class="grand-total-label">TOTAL</span>
@@ -886,10 +984,19 @@ function recalcBill() {
   const discAmt  = discountMode === 'pct'
     ? Math.min(subtotal, subtotal * discVal / 100)
     : Math.min(subtotal, discVal);
-  const grand = subtotal - discAmt;
-  document.getElementById('billSubtotal').textContent    = `₹${subtotal.toFixed(2)}`;
-  document.getElementById('discountAmount').textContent  = `-₹${discAmt.toFixed(2)}`;
-  document.getElementById('billGrandTotal').textContent  = `₹${grand.toFixed(2)}`;
+  const afterDisc = subtotal - discAmt;
+  const cgst = afterDisc * 0.025;
+  const sgst = afterDisc * 0.025;
+  const preRound = afterDisc + cgst + sgst;
+  const grand = Math.round(preRound);
+  const roundOff = grand - preRound;
+  document.getElementById('billSubtotal').textContent      = `₹${subtotal.toFixed(2)}`;
+  document.getElementById('discountAmount').textContent    = `-₹${discAmt.toFixed(2)}`;
+  document.getElementById('billAfterDiscount').textContent = `₹${afterDisc.toFixed(2)}`;
+  document.getElementById('billCGST').textContent          = `₹${cgst.toFixed(2)}`;
+  document.getElementById('billSGST').textContent          = `₹${sgst.toFixed(2)}`;
+  document.getElementById('billRoundOff').textContent      = `${roundOff >= 0 ? '+' : ''}₹${roundOff.toFixed(2)}`;
+  document.getElementById('billGrandTotal').textContent    = `₹${grand.toFixed(2)}`;
 }
 
 function saveAndClose() {
@@ -914,7 +1021,12 @@ function printBill() {
   const discAmt  = discountMode === 'pct'
     ? Math.min(subtotal, subtotal * discVal / 100)
     : Math.min(subtotal, discVal);
-  const grand = subtotal - discAmt;
+  const afterDisc = subtotal - discAmt;
+  const cgst = afterDisc * 0.025;
+  const sgst = afterDisc * 0.025;
+  const preRound = afterDisc + cgst + sgst;
+  const grand = Math.round(preRound);
+  const roundOff = grand - preRound;
   const now = new Date();
   const dateStr  = now.toLocaleDateString('en-IN');
   const timeStr  = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
@@ -960,6 +1072,9 @@ function printBill() {
     <hr class="print-divider">
     <div class="print-total-row"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
     ${discHTML}
+    <div class="print-total-row"><span>CGST @ 2.5%</span><span>₹${cgst.toFixed(2)}</span></div>
+    <div class="print-total-row"><span>SGST @ 2.5%</span><span>₹${sgst.toFixed(2)}</span></div>
+    <div class="print-total-row"><span>Round Off</span><span>${roundOff >= 0 ? '+' : ''}₹${roundOff.toFixed(2)}</span></div>
     <hr class="print-divider">
     <div class="print-grand-row"><span>TOTAL</span><span>₹${grand.toFixed(2)}</span></div>
     <hr class="print-divider">
@@ -987,6 +1102,10 @@ function printBill() {
       Object.assign(upd, {
         items:        billItems.map(i => ({ id:i.id, name:i.name, qty:i.qty, price:i.price })),
         total:        subtotal,
+        afterDiscount: afterDisc,
+        cgst:         cgst,
+        sgst:         sgst,
+        roundOff:     roundOff,
         grandTotal:   grand,
         discount:     discAmt,
         customerName: currentBillCustomerName,
@@ -1207,35 +1326,67 @@ function ensureHistoryLoaded(cb) {
 function exportExcel() {
   ensureHistoryLoaded(rows => {
     if (!rows.length) { alert('No data to export.'); return; }
-    const wsData = [['#','Date','Time','Order ID','Customer','Order Type','Table No','Payment Method','Items Count','Item Details','Subtotal (₹)','Discount (₹)','Grand Total (₹)','Status','Diet']];
+    const wsData = [['#','Date','Time','Order ID','Customer','Order Type','Table No','Payment Method','Items Count','Item Details','Subtotal (₹)','Discount (₹)','After Discount (₹)','CGST 2.5% (₹)','SGST 2.5% (₹)','Round Off (₹)','Grand Total (₹)','Status','Diet']];
     rows.forEach((o, idx) => {
       const raw = o.billedAt || o.createdAt;
       const d   = raw ? new Date(raw) : null;
       const items = Array.isArray(o.items) ? o.items : [];
       const sub  = items.reduce((s, i) => s + parseFloat(i.price) * parseInt(i.qty), 0);
       const disc = o.discount || 0;
+      const afterDisc = o.afterDiscount != null ? o.afterDiscount : (sub - disc);
+      const cgst = o.cgst != null ? o.cgst : afterDisc * 0.025;
+      const sgst = o.sgst != null ? o.sgst : afterDisc * 0.025;
+      const roundOff = o.roundOff != null ? o.roundOff : (Math.round(afterDisc + cgst + sgst) - (afterDisc + cgst + sgst));
       const grand = o.grandTotal || o.total || sub;
       wsData.push([
         idx+1,
         d ? d.toLocaleDateString('en-IN') : '',
         d ? d.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'}) : '',
         o.id || '', o.customerName || 'Guest',
-        o.orderType === 'dinein' ? 'Dine-In' : 'Takeaway',
-        o.orderType === 'dinein' ? (o.tableNumber || '') : '',
+        o.orderType === 'dinein' ? 'Dine-In' : (o.orderType === 'manual' ? 'Manual' : 'Takeaway'),
+        o.orderType === 'dinein' ? (o.tableNumber || '') : (o.orderType === 'manual' ? (o.packageName || '-') : ''),
         o.paymentMethod || '—',
         items.length,
         items.map(i => `${i.name} x${i.qty} @₹${i.price}`).join(' | '),
-        sub.toFixed(2), disc.toFixed(2), grand.toFixed(2),
-        o.status || '', o.diet || 'Regular'
+        sub.toFixed(2), disc.toFixed(2), afterDisc.toFixed(2),
+        cgst.toFixed(2), sgst.toFixed(2), roundOff.toFixed(2),
+        grand.toFixed(2), o.status || '', o.diet || 'Regular'
       ]);
     });
     const done = rows.filter(o => o.status === 'Completed');
     const rev  = done.reduce((s, o) => s + (o.grandTotal || o.total || 0), 0);
-    const disc = done.reduce((s, o) => s + (o.discount || 0), 0);
-    wsData.push([],['SUMMARY'],['Total Orders',done.length],['Total Revenue (₹)',rev.toFixed(2)],['Total Discount (₹)',disc.toFixed(2)],['Average Bill (₹)',done.length?(rev/done.length).toFixed(2):'0.00']);
+    const discSum = done.reduce((s, o) => s + (o.discount || 0), 0);
+    const roSum = done.reduce((s, o) => {
+      if (o.roundOff != null) return s + o.roundOff;
+      const it = Array.isArray(o.items) ? o.items : [];
+      const sb = it.reduce((ss, i) => ss + parseFloat(i.price)*parseInt(i.qty), 0);
+      const ad = sb - (o.discount||0); return s + (Math.round(ad*1.05) - ad*1.05);
+    }, 0);
+
+    // Payment breakdown
+    const payMethods = ['Cash','UPI','Card','IMPS','NEFT','Split'];
+    const pb = {}; payMethods.forEach(m => { pb[m] = {count:0,total:0}; });
+    done.forEach(o => {
+      const pm = o.paymentMethod || 'Cash';
+      if (!pb[pm]) pb[pm] = {count:0,total:0};
+      pb[pm].count++; pb[pm].total += (o.grandTotal || o.total || 0);
+    });
+
+    wsData.push([]);
+    wsData.push(['SUMMARY']);
+    wsData.push(['Total Orders', done.length]);
+    wsData.push(['Total Revenue (₹)', rev.toFixed(2)]);
+    wsData.push(['Total Discount (₹)', discSum.toFixed(2)]);
+    wsData.push(['Total Round Off (₹)', roSum.toFixed(2)]);
+    wsData.push(['Average Bill (₹)', done.length ? (rev/done.length).toFixed(2) : '0.00']);
+    wsData.push([]);
+    wsData.push(['PAYMENT METHOD BREAKDOWN']);
+    wsData.push(['Payment Method', 'No. of Bills', 'Total Amount (₹)']);
+    payMethods.forEach(m => { if (pb[m] && pb[m].count > 0) wsData.push([m, pb[m].count, pb[m].total.toFixed(2)]); });
+
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(wsData);
-    ws['!cols'] = [{wch:4},{wch:12},{wch:8},{wch:22},{wch:16},{wch:10},{wch:8},{wch:14},{wch:8},{wch:60},{wch:12},{wch:12},{wch:14},{wch:12},{wch:14}];
+    ws['!cols'] = [{wch:4},{wch:12},{wch:8},{wch:22},{wch:16},{wch:10},{wch:16},{wch:14},{wch:8},{wch:55},{wch:12},{wch:12},{wch:14},{wch:12},{wch:12},{wch:12},{wch:14},{wch:12},{wch:14}];
     XLSX.utils.book_append_sheet(wb, ws, 'Revenue Report');
     const from = document.getElementById('histFrom').value;
     const to   = document.getElementById('histTo').value;
@@ -1268,36 +1419,64 @@ function exportPDF() {
     });
     doc.autoTable({
       startY:58,
-      head:[['#','Date/Time','Customer','Type','Table','Payment','Items','Subtotal','Discount','Total','Status']],
+      head:[['#','Date/Time','Customer','Type','Table/Pkg','Payment','Items','Subtotal','Disc','CGST','SGST','RndOff','Total','Status']],
       body: rows.map((o, idx) => {
         const raw = o.billedAt || o.createdAt;
         const d   = raw ? new Date(raw) : null;
         const items = Array.isArray(o.items) ? o.items : [];
         const sub  = items.reduce((s, i) => s + parseFloat(i.price) * parseInt(i.qty), 0);
-        const disc = o.discount || 0;
+        const disc2 = o.discount || 0;
+        const afterDisc = o.afterDiscount != null ? o.afterDiscount : (sub - disc2);
+        const cgst = o.cgst != null ? o.cgst : afterDisc * 0.025;
+        const sgst = o.sgst != null ? o.sgst : afterDisc * 0.025;
+        const ro = o.roundOff != null ? o.roundOff : (Math.round(afterDisc+cgst+sgst)-(afterDisc+cgst+sgst));
         const grand = o.grandTotal || o.total || sub;
         const summary = items.length > 0
-          ? items.slice(0,3).map(i => `${i.name} x${i.qty}`).join(', ') + (items.length>3?` +${items.length-3} more`:'')
+          ? items.slice(0,2).map(i => `${i.name} x${i.qty}`).join(', ') + (items.length>2?` +${items.length-2} more`:'')
           : 'No items';
+        const typeLabel = o.orderType==='dinein'?'Dine-In': o.orderType==='manual'?'Manual':'Takeaway';
+        const tableCol = o.orderType==='dinein'?(o.tableNumber||'-'): o.orderType==='manual'?(o.packageName||'-'):'-';
         return [
           idx+1,
-          d ? d.toLocaleDateString('en-IN')+'\n'+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '—',
-          o.customerName||'Guest',
-          o.orderType==='dinein'?'Dine-In':'Takeaway',
-          o.orderType==='dinein'?(o.tableNumber||'-'):'-',
-          o.paymentMethod||'—',
-          summary,
-          '₹'+sub.toFixed(2),
-          disc>0?'₹'+disc.toFixed(2):'-',
-          '₹'+grand.toFixed(2),
-          o.status||''
+          d ? d.toLocaleDateString('en-IN')+'
+'+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '—',
+          o.customerName||'Guest', typeLabel, tableCol, o.paymentMethod||'—', summary,
+          '₹'+sub.toFixed(0), disc2>0?'-₹'+disc2.toFixed(0):'-',
+          '₹'+cgst.toFixed(0), '₹'+sgst.toFixed(0),
+          (ro>=0?'+':'')+ro.toFixed(0),
+          '₹'+grand.toFixed(0), o.status||''
         ];
       }),
-      styles:{fontSize:7,cellPadding:2},
-      headStyles:{fillColor:[30,41,59],textColor:[255,204,0],fontStyle:'bold',fontSize:7},
+      styles:{fontSize:6,cellPadding:1.5},
+      headStyles:{fillColor:[30,41,59],textColor:[255,204,0],fontStyle:'bold',fontSize:6},
       alternateRowStyles:{fillColor:[245,245,245]},
-      columnStyles:{0:{cellWidth:7},1:{cellWidth:20},2:{cellWidth:24},3:{cellWidth:16},4:{cellWidth:10},5:{cellWidth:18},6:{cellWidth:48},7:{cellWidth:18},8:{cellWidth:16},9:{cellWidth:18},10:{cellWidth:16}}
+      columnStyles:{0:{cellWidth:6},1:{cellWidth:18},2:{cellWidth:20},3:{cellWidth:13},4:{cellWidth:16},5:{cellWidth:13},6:{cellWidth:34},7:{cellWidth:13},8:{cellWidth:10},9:{cellWidth:10},10:{cellWidth:10},11:{cellWidth:10},12:{cellWidth:13},13:{cellWidth:13}}
     });
+
+    // Payment method breakdown
+    const payMethods = ['Cash','UPI','Card','IMPS','NEFT','Split'];
+    const pb = {}; payMethods.forEach(m => { pb[m] = {count:0,total:0}; });
+    done.forEach(o => {
+      const pm = o.paymentMethod || 'Cash';
+      if (!pb[pm]) pb[pm] = {count:0,total:0};
+      pb[pm].count++; pb[pm].total += (o.grandTotal||o.total||0);
+    });
+    const pbRows = payMethods.filter(m => pb[m] && pb[m].count > 0)
+      .map(m => [m, pb[m].count, '₹'+pb[m].total.toFixed(2)]);
+    if (pbRows.length) {
+      const fy = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 160) + 10;
+      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(40,40,40);
+      doc.text('Payment Method Breakdown', 14, fy);
+      doc.autoTable({
+        startY: fy + 4,
+        head:[['Payment Method','No. of Bills','Total Amount (₹)']],
+        body: pbRows,
+        styles:{fontSize:9,cellPadding:3},
+        headStyles:{fillColor:[30,41,59],textColor:[255,204,0],fontStyle:'bold'},
+        columnStyles:{0:{cellWidth:60},1:{cellWidth:40},2:{cellWidth:60}}
+      });
+    }
+
     const pages = doc.internal.getNumberOfPages();
     for (let i=1;i<=pages;i++) {
       doc.setPage(i); doc.setFontSize(8); doc.setTextColor(150,150,150);
@@ -1306,6 +1485,242 @@ function exportPDF() {
     }
     doc.save(`EMERALD_Revenue_${(from&&to)?from+'_to_'+to:'all_time'}.pdf`);
   });
+}
+
+/* ============================================================
+   MANUAL BILL
+   ============================================================ */
+const PACKAGES = {
+  pkg1:{ name:'Package One',         price:290 },
+  pkg2:{ name:'Package Two',         price:345 },
+  pkg3:{ name:'Package Three',       price:390 },
+  pkg4:{ name:'Package Four',        price:460 },
+  pkg5:{ name:'Package Five',        price:540 },
+  guj: { name:'Gujarati Package',    price:315 },
+  mb1: { name:'Morning Breakfast 1', price:99  },
+  mb2: { name:'Morning Breakfast 2', price:149 },
+  none:{ name:null, price:0 }
+};
+let manualItems     = [];
+let manualPeople    = 1;
+let manualDiscMode  = 'pct';
+let manualPayMethod = 'Cash';
+let selectedPkgId   = null;
+
+function selectPackage(pkgId) {
+  selectedPkgId = pkgId;
+  document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('pkg-' + pkgId).classList.add('selected');
+  if (pkgId !== 'none') {
+    const pkg = PACKAGES[pkgId];
+    manualItems = [{ id:pkgId, name:pkg.name, qty:manualPeople, price:pkg.price }];
+    const calcLine = `${pkg.name} × ${manualPeople} person${manualPeople>1?'s':''} = ₹${pkg.price} × ${manualPeople} = ₹${pkg.price*manualPeople} + CGST 2.5% + SGST 2.5%`;
+    document.getElementById('manualPkgCalcLine').textContent = calcLine;
+  } else {
+    manualItems = [];
+    document.getElementById('manualPkgCalcLine').textContent = '';
+  }
+  renderManualItems(); recalcManual();
+}
+
+function changeManualPeople(delta) {
+  manualPeople = Math.max(1, manualPeople + delta);
+  document.getElementById('manualPeopleCount').textContent = manualPeople;
+  if (selectedPkgId && selectedPkgId !== 'none') {
+    const pkg = PACKAGES[selectedPkgId];
+    const pkgItem = manualItems.find(i => i.id === selectedPkgId);
+    if (pkgItem) pkgItem.qty = manualPeople;
+    else manualItems = [{ id:selectedPkgId, name:pkg.name, qty:manualPeople, price:pkg.price }];
+    document.getElementById('manualPkgCalcLine').textContent =
+      `${pkg.name} × ${manualPeople} person${manualPeople>1?'s':''} = ₹${pkg.price} × ${manualPeople} = ₹${pkg.price*manualPeople} + CGST 2.5% + SGST 2.5%`;
+  }
+  renderManualItems(); recalcManual();
+}
+
+function searchManualItems() {
+  const q = document.getElementById('manualMenuSearch').value.toLowerCase().trim();
+  const div = document.getElementById('manualMenuResults');
+  if (!q) { div.style.display='none'; return; }
+  const hits = allMenuItems.filter(i => i.name.toLowerCase().includes(q)).slice(0,12);
+  if (!hits.length) { div.style.display='none'; return; }
+  div.style.display='block';
+  div.innerHTML = hits.map(i =>
+    `<div class="menu-result-item" onclick="addManualItem('${i.id}','${i.name.replace(/'/g,"\'")}',${i.price})">
+       <span class="menu-result-name">${i.name}</span>
+       <span class="menu-result-price">₹${i.price.toFixed(2)}</span>
+     </div>`).join('');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#manualMenuSearch') && !e.target.closest('#manualMenuResults'))
+    document.getElementById('manualMenuResults').style.display = 'none';
+});
+
+function addManualItem(id, name, price) {
+  const ex = manualItems.find(i => i.id === id);
+  if (ex) ex.qty += 1;
+  else manualItems.push({ id, name, qty:1, price:parseFloat(price) });
+  document.getElementById('manualMenuSearch').value = '';
+  document.getElementById('manualMenuResults').style.display = 'none';
+  renderManualItems(); recalcManual();
+}
+
+function renderManualItems() {
+  const tbody = document.getElementById('manualBillBody');
+  if (!manualItems.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-bill-msg">Select a package or add items above</td></tr>';
+    return;
+  }
+  tbody.innerHTML = manualItems.map((item, idx) => `
+    <tr>
+      <td><input class="item-name-editable" value="${item.name.replace(/"/g,'&quot;')}" onchange="updateManualName(${idx},this.value)"></td>
+      <td><div class="qty-cell">
+        <button class="qty-btn" onclick="updateManualQty(${idx},-1)">−</button>
+        <span class="qty-val">${item.qty}</span>
+        <button class="qty-btn" onclick="updateManualQty(${idx},1)">+</button>
+      </div></td>
+      <td><input class="price-editable" type="number" value="${item.price.toFixed(2)}" onchange="updateManualPrice(${idx},this.value)"></td>
+      <td>₹${(item.price*item.qty).toFixed(2)}</td>
+      <td><button class="remove-item-btn" onclick="removeManualItem(${idx})">✕</button></td>
+    </tr>`).join('');
+}
+
+function updateManualName(idx,val)  { manualItems[idx].name=val; }
+function updateManualPrice(idx,val) { manualItems[idx].price=parseFloat(val)||0; renderManualItems(); recalcManual(); }
+function updateManualQty(idx,delta) { manualItems[idx].qty=Math.max(1,manualItems[idx].qty+delta); renderManualItems(); recalcManual(); }
+function removeManualItem(idx)      { manualItems.splice(idx,1); renderManualItems(); recalcManual(); }
+
+function setManualDiscMode(mode) {
+  manualDiscMode = mode;
+  document.getElementById('mDiscPctBtn').classList.toggle('active', mode==='pct');
+  document.getElementById('mDiscRupBtn').classList.toggle('active', mode==='rs');
+  recalcManual();
+}
+function selectManualPayment(method) {
+  manualPayMethod = method;
+  document.querySelectorAll('[id^="mpay-"]').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('mpay-'+method);
+  if (el) el.classList.add('selected');
+}
+
+function recalcManual() {
+  const subtotal = manualItems.reduce((s,i) => s+i.price*i.qty, 0);
+  const discVal  = parseFloat(document.getElementById('mDiscountInput').value) || 0;
+  const discAmt  = manualDiscMode==='pct'
+    ? Math.min(subtotal, subtotal*discVal/100)
+    : Math.min(subtotal, discVal);
+  const afterDisc = subtotal - discAmt;
+  const cgst = afterDisc*0.025, sgst = afterDisc*0.025;
+  const preRound = afterDisc+cgst+sgst;
+  const grand = Math.round(preRound);
+  const roundOff = grand - preRound;
+  document.getElementById('mSubtotal').textContent      = `₹${subtotal.toFixed(2)}`;
+  document.getElementById('mDiscountAmt').textContent   = `-₹${discAmt.toFixed(2)}`;
+  document.getElementById('mAfterDiscount').textContent = `₹${afterDisc.toFixed(2)}`;
+  document.getElementById('mCGST').textContent          = `₹${cgst.toFixed(2)}`;
+  document.getElementById('mSGST').textContent          = `₹${sgst.toFixed(2)}`;
+  document.getElementById('mRoundOff').textContent      = `${roundOff>=0?'+':''}₹${roundOff.toFixed(2)}`;
+  document.getElementById('mGrandTotal').textContent    = `₹${grand.toFixed(2)}`;
+}
+
+function printManualBill() {
+  if (!manualItems.length) { alert('Please add at least one item.'); return; }
+  const subtotal = manualItems.reduce((s,i) => s+i.price*i.qty, 0);
+  const discVal  = parseFloat(document.getElementById('mDiscountInput').value) || 0;
+  const discAmt  = manualDiscMode==='pct'
+    ? Math.min(subtotal, subtotal*discVal/100)
+    : Math.min(subtotal, discVal);
+  const afterDisc = subtotal - discAmt;
+  const cgst = afterDisc*0.025, sgst = afterDisc*0.025;
+  const preRound = afterDisc+cgst+sgst;
+  const grand = Math.round(preRound);
+  const roundOff = grand - preRound;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-IN');
+  const timeStr = now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const orderNo = 'M'+Date.now().toString().slice(-6);
+  const payIcon = PAYMENT_ICONS[manualPayMethod] || '💰';
+  const custName = document.getElementById('manualCustomerName').value.trim() || 'Guest';
+  const discLabel = discAmt > 0 ? (manualDiscMode==='pct'?`Discount (${discVal}%)`:'Discount') : '';
+  const discHTML = discAmt > 0
+    ? `<div class="print-total-row"><span>${discLabel}</span><span>-${discAmt.toFixed(2)}</span></div>` : '';
+  const itemsHTML = manualItems.map(i =>
+    `<div class="print-item-row">
+       <span class="print-item-name">${i.name}</span>
+       <span class="print-item-qty">x${i.qty}</span>
+       <span class="print-item-price">${(i.price*i.qty).toFixed(2)}</span>
+     </div>`).join('');
+
+  document.getElementById('print-area').innerHTML = `
+    <div style="text-align:center;margin-bottom:4px;">
+      <div class="print-restaurant">EMERALD</div>
+      <div class="print-tagline">Fine Dining &amp; Hospitality</div>
+      <div style="font-size:10px;color:#555;margin-top:2px;">Open Daily: 12:00 PM – 11:00 PM</div>
+    </div>
+    <hr class="print-divider">
+    <div class="print-info-row"><span>Bill No:</span><span>#${orderNo}</span></div>
+    <div class="print-info-row"><span>Customer:</span><span>${custName}</span></div>
+    <div class="print-info-row"><span>Pax:</span><span>${manualPeople}</span></div>
+    <div class="print-info-row"><span>Date:</span><span>${dateStr}</span></div>
+    <div class="print-info-row"><span>Time:</span><span>${timeStr}</span></div>
+    <hr class="print-divider">
+    <div class="print-items-header">
+      <span style="flex:1">Item</span>
+      <span style="width:30px;text-align:center">Qty</span>
+      <span style="width:60px;text-align:right">Amt</span>
+    </div>
+    <hr class="print-divider">
+    ${itemsHTML}
+    <hr class="print-divider">
+    <div class="print-total-row"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
+    ${discHTML}
+    <div class="print-total-row"><span>CGST @ 2.5%</span><span>₹${cgst.toFixed(2)}</span></div>
+    <div class="print-total-row"><span>SGST @ 2.5%</span><span>₹${sgst.toFixed(2)}</span></div>
+    <div class="print-total-row"><span>Round Off</span><span>${roundOff>=0?'+':''}₹${roundOff.toFixed(2)}</span></div>
+    <hr class="print-divider">
+    <div class="print-grand-row"><span>TOTAL</span><span>₹${grand.toFixed(2)}</span></div>
+    <hr class="print-divider">
+    <div style="text-align:center;margin:8px 0;">
+      <div class="print-payment-badge">${payIcon} Paid via ${manualPayMethod}</div>
+    </div>
+    <hr class="print-divider">
+    <div class="print-thankyou">Thank You! 🙏</div>
+    <div class="print-footer">Visit us again • EMERALD Restaurant<br>*This is your bill receipt*</div>
+    <hr class="print-divider">
+    <div class="print-gst-block">
+      <div class="print-gst-row">GSTIN : 24AADFE5274B1ZV</div>
+      <div class="print-gst-row">HSN / SAC : 9963</div>
+      <div class="print-gst-row">FASSAI No. :10715026000591</div>
+      <div class="print-manager-sign">Manager's Sign</div>
+    </div>
+  `;
+
+  // Save to Firebase
+  const manualOrderId = 'MANUAL_' + Date.now();
+  db.ref('orders/'+manualOrderId).set({
+    id:manualOrderId, customerName:custName, orderType:'manual', people:manualPeople,
+    packageName: selectedPkgId && selectedPkgId!=='none' ? PACKAGES[selectedPkgId].name : null,
+    items: manualItems.map(i=>({id:i.id,name:i.name,qty:i.qty,price:i.price})),
+    total:subtotal, afterDiscount:afterDisc, cgst:cgst, sgst:sgst, roundOff:roundOff,
+    grandTotal:grand, discount:discAmt, paymentMethod:manualPayMethod,
+    status:'Completed', billedAt:new Date().toISOString(), createdAt:new Date().toISOString()
+  }).catch(e=>console.error(e));
+
+  window.print();
+}
+
+function resetManualBill() {
+  manualItems=[]; manualPeople=1; manualDiscMode='pct'; manualPayMethod='Cash'; selectedPkgId=null;
+  document.querySelectorAll('.pkg-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('manualPeopleCount').textContent='1';
+  document.getElementById('manualPkgCalcLine').textContent='';
+  document.getElementById('mDiscountInput').value='';
+  document.getElementById('manualCustomerName').value='';
+  document.getElementById('manualMenuSearch').value='';
+  document.getElementById('manualMenuResults').style.display='none';
+  document.querySelectorAll('[id^="mpay-"]').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('mpay-Cash').classList.add('selected');
+  setManualDiscMode('pct');
+  renderManualItems(); recalcManual();
 }
 </script>
 </body>
