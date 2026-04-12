@@ -256,11 +256,15 @@ const firebaseConfig = {
   appId: "1:773704600274:web:01a362fccfe4db96633b0b",
   measurementId: "G-HLR1W64K41"
 };
-// Guard: only initialise once (prevents duplicate-app errors on hot-reload)
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+let db;
+try {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  db = firebase.database();
+} catch(e) {
+  console.error("FIREBASE INIT FAILED:", e);
 }
-const db = firebase.database();
 </script>
 </head>
 <body>
@@ -271,6 +275,17 @@ const db = firebase.database();
   <div id="conn-status" style="margin-top:8px;font-size:13px;font-weight:600;color:#94a3b8;">
     <span id="conn-dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f59e0b;margin-right:6px;"></span>
     <span id="conn-text">Connecting...</span>
+  </div>
+  <!-- Firebase Debug Panel -->
+  <div id="fb-debug-panel" style="margin-top:12px;max-width:600px;margin-left:auto;margin-right:auto;">
+    <button onclick="document.getElementById('fb-debug-panel').querySelector('.fb-debug-body').style.display = document.getElementById('fb-debug-panel').querySelector('.fb-debug-body').style.display==='none'?'block':'none'"
+      style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#94a3b8;padding:6px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:Inter,sans-serif;">
+      🔍 Show Firebase Debug Log
+    </button>
+    <div class="fb-debug-body" style="display:none;background:#0a0f1a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px;margin-top:8px;text-align:left;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:8px;">Firebase Connection Log</div>
+      <div id="fb-debug-box"></div>
+    </div>
   </div>
 </div>
 
@@ -617,49 +632,85 @@ let discountMode = 'pct';
 let selectedPaymentMethod = 'Cash';
 
 /* ============================================================
-   FIREBASE LISTENERS  –  wrapped in DOMContentLoaded so that
-   conn-dot / conn-text elements are guaranteed to exist before
-   any callback fires.
+   FIREBASE DEBUG LOGGER
+   ============================================================ */
+function fbLog(msg, color) {
+  console.log('[Firebase]', msg);
+  const box = document.getElementById('fb-debug-box');
+  if (!box) return;
+  const line = document.createElement('div');
+  line.style.cssText = `font-size:12px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:${color||'#94a3b8'}`;
+  line.textContent = new Date().toLocaleTimeString() + ' — ' + msg;
+  box.prepend(line);
+  // keep only last 15 lines
+  while (box.children.length > 15) box.removeChild(box.lastChild);
+}
+
+function setConnStatus(state) {
+  // state: 'connecting' | 'live' | 'error' | 'reconnecting'
+  const dot = document.getElementById('conn-dot');
+  const txt = document.getElementById('conn-text');
+  const map = {
+    connecting:  { bg: '#f59e0b', label: 'Connecting…' },
+    live:        { bg: '#22c55e', label: '🟢 Live' },
+    reconnecting:{ bg: '#f59e0b', label: '🟡 Reconnecting…' },
+    error:       { bg: '#ef4444', label: '🔴 Connection Error' }
+  };
+  const s = map[state] || map.connecting;
+  if (dot) dot.style.background = s.bg;
+  if (txt) txt.textContent = s.label;
+}
+
+/* ============================================================
+   FIREBASE LISTENERS
    ============================================================ */
 function initFirebaseListeners() {
+  fbLog('initFirebaseListeners() called', '#60a5fa');
 
-  // ── Real-time connection indicator ──────────────────────────
+  if (!db) {
+    fbLog('ERROR: db is undefined — Firebase did not initialise!', '#ef4444');
+    setConnStatus('error');
+    return;
+  }
+
+  fbLog('db object OK — attaching listeners…', '#94a3b8');
+
+  // ── Real-time connection state ───────────────────────────────
   db.ref('.info/connected').on('value', snap => {
-    const dot = document.getElementById('conn-dot');
-    const txt = document.getElementById('conn-text');
     const connected = snap.val() === true;
-    if (dot) dot.style.background = connected ? '#22c55e' : '#f59e0b';
-    if (txt) txt.textContent     = connected ? 'Live'    : 'Reconnecting…';
+    fbLog('.info/connected → ' + connected, connected ? '#22c55e' : '#f59e0b');
+    setConnStatus(connected ? 'live' : 'reconnecting');
+  }, err => {
+    fbLog('.info/connected ERROR: ' + err.message, '#ef4444');
   });
 
-  // ── Orders listener ─────────────────────────────────────────
+  // ── Orders ───────────────────────────────────────────────────
   db.ref('orders').on('value', snap => {
-    const dot = document.getElementById('conn-dot');
-    const txt = document.getElementById('conn-text');
-    if (dot) dot.style.background = '#22c55e';
-    if (txt) txt.textContent = 'Live';
+    fbLog('orders snapshot received, size=' + JSON.stringify(snap.val() || {}).length + ' bytes', '#22c55e');
+    setConnStatus('live');
     const data = snap.val();
     allOrders = data ? Object.values(data).filter(o => o && o.id) : [];
+    fbLog('allOrders count: ' + allOrders.length, '#94a3b8');
     renderManagerDashboard();
   }, err => {
-    const dot = document.getElementById('conn-dot');
+    fbLog('orders ERROR: ' + err.code + ' — ' + err.message, '#ef4444');
+    setConnStatus('error');
     const txt = document.getElementById('conn-text');
-    if (dot) dot.style.background = '#ef4444';
-    if (txt) txt.textContent = 'Error: ' + err.message;
-    console.error('Firebase orders error:', err);
+    if (txt) txt.textContent = '🔴 ' + err.message;
   });
 
-  // ── Queue listener ───────────────────────────────────────────
+  // ── Queue ────────────────────────────────────────────────────
   db.ref('queue').on('value', snap => {
+    fbLog('queue snapshot received', '#22c55e');
     const data = snap.val();
     allQueue = data ? Object.values(data).filter(q => q) : [];
     renderManagerDashboard();
   }, err => {
-    console.error('Firebase queue error:', err);
+    fbLog('queue ERROR: ' + err.code + ' — ' + err.message, '#ef4444');
   });
 }
 
-// Guarantee DOM is ready before attaching listeners
+// Wait for DOM before attaching listeners
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initFirebaseListeners);
 } else {
