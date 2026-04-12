@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1453,8 +1454,7 @@ function exportPDF() {
         const tableCol = o.orderType==='dinein'?(o.tableNumber||'-'): o.orderType==='manual'?(o.packageName||'-'):'-';
         return [
           idx+1,
-          d ? d.toLocaleDateString('en-IN')+'
-'+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '—',
+          d ? d.toLocaleDateString('en-IN')+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '—',
           o.customerName||'Guest', typeLabel, tableCol, o.paymentMethod||'—', summary,
           '₹'+sub.toFixed(0), disc2>0?'-₹'+disc2.toFixed(0):'-',
           '₹'+cgst.toFixed(0), '₹'+sgst.toFixed(0),
