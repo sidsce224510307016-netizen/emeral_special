@@ -256,21 +256,11 @@ const firebaseConfig = {
   appId: "1:773704600274:web:01a362fccfe4db96633b0b",
   measurementId: "G-HLR1W64K41"
 };
-firebase.initializeApp(firebaseConfig);
+// Guard: only initialise once (prevents duplicate-app errors on hot-reload)
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.database();
-
-// ── Real-time connection state via .info/connected ──
-db.ref('.info/connected').on('value', snap => {
-  const dot = document.getElementById('conn-dot');
-  const txt = document.getElementById('conn-text');
-  if (snap.val() === true) {
-    if (dot) { dot.style.background = '#22c55e'; dot.style.boxShadow = '0 0 6px #22c55e'; }
-    if (txt) txt.textContent = 'Live';
-  } else {
-    if (dot) { dot.style.background = '#ef4444'; dot.style.boxShadow = '0 0 6px #ef4444'; }
-    if (txt) txt.textContent = 'Disconnected — retrying…';
-  }
-});
 </script>
 </head>
 <body>
@@ -279,30 +269,9 @@ db.ref('.info/connected').on('value', snap => {
   <div class="brand-name">EMERALD</div>
   <div class="subtitle">Manager Dashboard</div>
   <div id="conn-status" style="margin-top:8px;font-size:13px;font-weight:600;color:#94a3b8;">
-    <span id="conn-dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f59e0b;margin-right:6px;box-shadow:0 0 6px #f59e0b;"></span>
+    <span id="conn-dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f59e0b;margin-right:6px;"></span>
     <span id="conn-text">Connecting...</span>
   </div>
-</div>
-
-<!-- Firebase Rules Helper Banner -->
-<div id="firebase-help-banner" style="display:none;max-width:900px;margin:0 auto 24px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);border-radius:14px;padding:20px 24px;">
-  <div style="font-size:15px;font-weight:800;color:#ef4444;margin-bottom:10px;">⚠️ Firebase Not Connecting</div>
-  <div style="font-size:13px;color:#fca5a5;line-height:1.7;">
-    The most common reason is <strong>Firebase Realtime Database Rules</strong> are set to deny reads/writes.<br>
-    <strong>To fix:</strong><br>
-    1. Go to <a href="https://console.firebase.google.com/project/emerlad-213c0/database/emerlad-213c0-default-rtdb/rules" target="_blank" style="color:#fbbf24;">Firebase Console → Realtime Database → Rules</a><br>
-    2. Replace rules with:
-    <pre style="background:rgba(0,0,0,0.4);padding:10px;border-radius:8px;margin:8px 0;font-size:12px;color:#86efac;">
-{
-  "rules": {
-    ".read": true,
-    ".write": true
-  }
-}</pre>
-    3. Click <strong>Publish</strong> — then refresh this page.<br>
-    <span style="color:#94a3b8;font-size:12px;">Note: For production, restrict rules to authenticated users only.</span>
-  </div>
-  <button onclick="document.getElementById('firebase-help-banner').style.display='none'" style="margin-top:12px;padding:8px 18px;background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.3);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Dismiss</button>
 </div>
 
 <nav class="tab-nav">
@@ -648,44 +617,54 @@ let discountMode = 'pct';
 let selectedPaymentMethod = 'Cash';
 
 /* ============================================================
-   FIREBASE LISTENERS
+   FIREBASE LISTENERS  –  wrapped in DOMContentLoaded so that
+   conn-dot / conn-text elements are guaranteed to exist before
+   any callback fires.
    ============================================================ */
+function initFirebaseListeners() {
 
-// Warn if no data arrives within 10 seconds
-const _connTimeout = setTimeout(() => {
-  const txt = document.getElementById('conn-text');
-  const dot = document.getElementById('conn-dot');
-  const banner = document.getElementById('firebase-help-banner');
-  if (txt && txt.textContent === 'Connecting...') {
-    if (txt) txt.textContent = '⚠️ Slow connection — check Firebase Rules or internet';
-    if (dot) { dot.style.background = '#f59e0b'; dot.style.boxShadow = '0 0 6px #f59e0b'; }
-    if (banner) banner.style.display = 'block';
-  }
-}, 10000);
+  // ── Real-time connection indicator ──────────────────────────
+  db.ref('.info/connected').on('value', snap => {
+    const dot = document.getElementById('conn-dot');
+    const txt = document.getElementById('conn-text');
+    const connected = snap.val() === true;
+    if (dot) dot.style.background = connected ? '#22c55e' : '#f59e0b';
+    if (txt) txt.textContent     = connected ? 'Live'    : 'Reconnecting…';
+  });
 
-db.ref('orders').on('value', snap => {
-  clearTimeout(_connTimeout);
-  const banner = document.getElementById('firebase-help-banner');
-  if (banner) banner.style.display = 'none';
-  const data = snap.val();
-  allOrders = data ? Object.values(data).filter(o => o && o.id) : [];
-  renderManagerDashboard();
-}, err => {
-  clearTimeout(_connTimeout);
-  const dot = document.getElementById('conn-dot');
-  const txt = document.getElementById('conn-text');
-  const banner = document.getElementById('firebase-help-banner');
-  if (dot) { dot.style.background = '#ef4444'; dot.style.boxShadow = '0 0 6px #ef4444'; }
-  if (txt) txt.textContent = '❌ Firebase Error: ' + err.message;
-  if (banner) banner.style.display = 'block';
-  console.error('Firebase orders error:', err);
-});
+  // ── Orders listener ─────────────────────────────────────────
+  db.ref('orders').on('value', snap => {
+    const dot = document.getElementById('conn-dot');
+    const txt = document.getElementById('conn-text');
+    if (dot) dot.style.background = '#22c55e';
+    if (txt) txt.textContent = 'Live';
+    const data = snap.val();
+    allOrders = data ? Object.values(data).filter(o => o && o.id) : [];
+    renderManagerDashboard();
+  }, err => {
+    const dot = document.getElementById('conn-dot');
+    const txt = document.getElementById('conn-text');
+    if (dot) dot.style.background = '#ef4444';
+    if (txt) txt.textContent = 'Error: ' + err.message;
+    console.error('Firebase orders error:', err);
+  });
 
-db.ref('queue').on('value', snap => {
-  const data = snap.val();
-  allQueue = data ? Object.values(data).filter(q => q) : [];
-  renderManagerDashboard();
-});
+  // ── Queue listener ───────────────────────────────────────────
+  db.ref('queue').on('value', snap => {
+    const data = snap.val();
+    allQueue = data ? Object.values(data).filter(q => q) : [];
+    renderManagerDashboard();
+  }, err => {
+    console.error('Firebase queue error:', err);
+  });
+}
+
+// Guarantee DOM is ready before attaching listeners
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initFirebaseListeners);
+} else {
+  initFirebaseListeners();
+}
 
 /* ============================================================
    BUILD TABLE MAP
